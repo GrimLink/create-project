@@ -1,0 +1,18 @@
+#!/bin/bash
+
+RESET='\033[0m'
+GREEN='\033[1;32m'
+
+# React handels all the magic for us
+# So no aditional stuff is needed
+if [[ -n "$1" ]]; then
+  echo -e "${GREEN}Creating React App in ${1}${RESET}";
+  npx create-react-app $1 &&
+  cd $1 &&
+  npm start;
+else
+  echo -e "${GREEN}Creating React App in current folder${RESET}";
+  npx create-react-app . &&
+  npm start;
+fi
+

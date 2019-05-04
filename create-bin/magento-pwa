@@ -1,0 +1,20 @@
+#!/bin/bash
+
+RESET='\033[0m'
+GREEN='\033[1;32m'
+
+# TODO: create steps for this
+# This serves as an add-on
+# and will require the magento create-bin file
+
+# (Optionaly create Magento install)
+# read -p "Also create a magento project? [Yy] " -n 1;
+# echo "";
+# if [[ $REPLY =~ ^[Yy]$ ]]; then
+#   read -p "Name for magento project: " MAGE_NAME;
+#   echo "";
+#   mkdir $MAGE_NAME &&
+#   cd $MAGE_NAME &&
+#   bash $(dirname "${BASH_SOURCE}")/magento $MAGE_NAME &&
+#   cd ..;
+# fi;

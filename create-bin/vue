@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Vue handels all the magic for us
+# So no aditional stuff is needed
+if [[ -n "$1" ]]; then
+  vue create $1 &&
+  cd $1 &&
+  npm run serve;
+else
+  vue create . &&
+  npm run serve;
+fi
