@@ -6,32 +6,30 @@ GREEN='\033[1;32m'
 WPNAME="$1"
 
 if [[ -z "$1" ]]; then
-  echo "The Wordpress install requires a name" &&
-  read -p "Project name: " PROJECT_NAME;
-  WPNAME="$PROJECT_NAME";
+  echo "The Wordpress install requires a name"
+  read -p "Project name: " PROJECT_NAME
+  WPNAME="$PROJECT_NAME"
 fi
 
-echo -e "${GREEN}Creating Wordpress project in ${WPNAME}${RESET}";
-echo "";
+echo -e "${GREEN}Creating Wordpress project in ${WPNAME}${RESET}"
+echo ""
 
-mkdir $WPNAME &&
-cd $WPNAME &&
-wp core download;
+mkdir $WPNAME && cd $WPNAME && wp core download
 
 # Setup DB
-DBUSER="root";
-DBPASS="root";
-DBHOST="localhost";
-read -p "DB name: ${WPNAME} or " DBNAME;
+DBUSER="root"
+DBPASS="root"
+DBHOST="localhost"
+read -p "DB name: ${WPNAME} or " DBNAME
 if [[ -z "$DBNAME" ]]; then
-  DBNAME="${WPNAME}";
+  DBNAME="${WPNAME}"
 fi
 
-if command -v valet &> /dev/null; then
-  valet db create $DBNAME;
+if command -v valet &>/dev/null; then
+  valet db create $DBNAME
 else
-  echo "First create a datebase for you Wordpress project";
-  read -rsn1 -p "When ready, press any key to continue";
+  echo "First create a datebase for you Wordpress project"
+  read -rsn1 -p "When ready, press any key to continue"
 fi
 
 # Add WP config
@@ -40,12 +38,12 @@ wp core config \
   --dbuser=$DBUSER \
   --dbpass=$DBPASS \
   --dbhost=$DBHOST \
-  --dbprefix="wp_" &&
+  --dbprefix="wp_"
 
 # Install WP
-read -p "Admin name: " ADNAME;
-read -s -p "Admin Password: " ADPASS;
-echo "";
+read -p "Admin name: " ADNAME
+read -s -p "Admin Password: " ADPASS
+echo ""
 wp core install \
   --url="http://${WPNAME}.test" \
   --title="${WPNAME}" \

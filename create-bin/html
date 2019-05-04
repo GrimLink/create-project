@@ -31,20 +31,19 @@ createHTML() {
     <header></header>
     <main>${1}</main>
   </body>
-</html>" >> index.html
+</html>" >>index.html
   mkdir public
   mkdir src
   touch .gitignore
-  npm init -y > /dev/null
+  npm init -y >/dev/null
 }
 
 if [[ -n "$1" ]]; then
-  echo -e "${GREEN}Creating Html project in ${1}${RESET}";
-  mkdir $1 &&
-  cd $1 && createHTML;
+  echo -e "${GREEN}Creating Html project in ${1}${RESET}"
+  mkdir $1 && cd $1 && createHTML
 else
-  echo -e "${GREEN}Creating Html project in current folder${RESET}";
-  createHTML;
+  echo -e "${GREEN}Creating Html project in current folder${RESET}"
+  createHTML
 fi
 
-unset createHTML;
+unset createHTML

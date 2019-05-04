@@ -5,37 +5,35 @@ GREEN='\033[1;32m'
 OCT_NAME="${1}"
 
 if [[ -z "$1" ]]; then
-  echo "The OctoberCMS install requires a name" &&
-  read -p "Project name: " PROJECT_NAME;
-  OCT_NAME="$PROJECT_NAME";
+  echo "The OctoberCMS install requires a name"
+  read -p "Project name: " PROJECT_NAME
+  OCT_NAME="$PROJECT_NAME"
 fi
 
-echo -e "${GREEN}Creating OctoberCMS project in ${OCT_NAME}${RESET}";
-echo "";
+echo -e "${GREEN}Creating OctoberCMS project in ${OCT_NAME}${RESET}"
+echo ""
 
-composer create-project october/october $OCT_NAME &&
-cd $OCT_NAME;
+composer create-project october/october $OCT_NAME && cd $OCT_NAME
 
-if command -v valet &> /dev/null; then
-  read -p "Create DB via Valet? [Yy] " -n 1;
-  echo "";
+if command -v valet &>/dev/null; then
+  read -p "Create DB via Valet? [Yy] " -n 1
+  echo ""
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    read -p "DB name: ${OCT_NAME} or " DBNAME;
-    echo "";
+    read -p "DB name: ${OCT_NAME} or " DBNAME
+    echo ""
     if [[ -z "$DBNAME" ]]; then
-      DBNAME="${OCT_NAME}";
+      DBNAME="${OCT_NAME}"
     fi
-    valet db create $DBNAME;
+    valet db create $DBNAME
   else
-    echo "First create a datebase for you October project";
-    read -rsn1 -p "When ready, press any key to continue";
-    echo "";
-  fi;
+    echo "First create a datebase for you October project"
+    read -rsn1 -p "When ready, press any key to continue"
+    echo ""
+  fi
 else
-  echo "First create a datebase for you October project";
-  read -rsn1 -p "When ready, press any key to continue";
-  echo "";
+  echo "First create a datebase for you October project"
+  read -rsn1 -p "When ready, press any key to continue"
+  echo ""
 fi
 
-php artisan october:install &&
-php artisan october:env
+php artisan october:install && php artisan october:env

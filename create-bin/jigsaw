@@ -5,32 +5,32 @@ BOLD='\033[1m'
 GREEN='\033[1;32m'
 
 if [[ -z "$1" ]]; then
-  echo -e "${GREEN}Creating Jigsaw project in current folder${RESET}";
-  echo "";
+  echo -e "${GREEN}Creating Jigsaw project in current folder${RESET}"
+  echo ""
 else
-  echo -e "${GREEN}Creating Jigsaw project in ${1}${RESET}";
-  echo "";
+  echo -e "${GREEN}Creating Jigsaw project in ${1}${RESET}"
+  echo ""
 fi
 
-echo -e "${BOLD}Options:${RESET}";
-echo "- blog";
-echo "- docs";
-echo "(Leave blank for none)";
-read -p "Starter Template: " TEMPLATE;
-echo "";
+echo -e "${BOLD}Options:${RESET}"
+echo "- blog"
+echo "- docs"
+echo "(Leave blank for none)"
+read -p "Starter Template: " TEMPLATE
+echo ""
 
 if [[ -z "$TEMPLATE" ]]; then
-  INIT="init";
+  INIT="init"
 else
-  INIT="init ${TEMPLATE}";
-fi;
+  INIT="init ${TEMPLATE}"
+fi
 
 if [[ -n "$1" ]]; then
   mkdir $1 &&
-  cd $1 &&
-  composer require tightenco/jigsaw &&
-  ./vendor/bin/jigsaw $INIT
+    cd $1 &&
+    composer require tightenco/jigsaw &&
+    ./vendor/bin/jigsaw $INIT
 else
   composer require tightenco/jigsaw &&
-  ./vendor/bin/jigsaw $INIT
-fi;
+    ./vendor/bin/jigsaw $INIT
+fi
