@@ -73,6 +73,8 @@ elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   if command -v valet &>/dev/null; then
     valet secure
   fi
+else
+  MAGE_URL="${URL}"
 fi
 
 FIRSTNAME="$(git config --global --get user.name)"
