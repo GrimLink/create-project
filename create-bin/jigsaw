@@ -2,6 +2,7 @@
 
 RESET='\033[0m'
 BOLD='\033[1m'
+ITALIC='\033[3m'
 GREEN='\033[1;32m'
 
 if [[ -z "$1" ]]; then
@@ -15,7 +16,7 @@ fi
 echo -e "${BOLD}Options:${RESET}"
 echo "- blog"
 echo "- docs"
-echo "(Leave blank for none)"
+echo -e "- ${ITALIC}Leave blank for none${RESET}"
 read -p "Starter Template: " TEMPLATE
 echo ""
 
