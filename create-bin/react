@@ -7,8 +7,10 @@ GREEN='\033[1;32m'
 # So no aditional stuff is needed
 if [[ -n "$1" ]]; then
   echo -e "${GREEN}Creating React App in ${1}${RESET}"
-  npx create-react-app $1 && cd $1 && npm start
+  npx create-react-app $1 &&
+  cd $1 && npm start
 else
   echo -e "${GREEN}Creating React App in current folder${RESET}"
-  npx create-react-app . && npm start
+  npx create-react-app . &&
+  npm start
 fi

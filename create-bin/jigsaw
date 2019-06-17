@@ -28,10 +28,10 @@ fi
 
 if [[ -n "$1" ]]; then
   mkdir $1 &&
-    cd $1 &&
-    composer require tightenco/jigsaw &&
-    ./vendor/bin/jigsaw $INIT
+  cd $1 &&
+  composer require tightenco/jigsaw &&
+  ./vendor/bin/jigsaw $INIT
 else
   composer require tightenco/jigsaw &&
-    ./vendor/bin/jigsaw $INIT
+  ./vendor/bin/jigsaw $INIT
 fi

@@ -31,7 +31,8 @@ createHTML() {
     <header></header>
     <main>${1}</main>
   </body>
-</html>" >>index.html
+</html>" >> index.html
+
   mkdir public
   mkdir src
   touch .gitignore
@@ -40,7 +41,9 @@ createHTML() {
 
 if [[ -n "$1" ]]; then
   echo -e "${GREEN}Creating Html project in ${1}${RESET}"
-  mkdir $1 && cd $1 && createHTML
+  mkdir $1 &&
+  cd $1 &&
+  createHTML
 else
   echo -e "${GREEN}Creating Html project in current folder${RESET}"
   createHTML
