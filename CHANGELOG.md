@@ -2,6 +2,7 @@
 
 ## 30-06-19
 * ADD: installer
+* IMP: readme
 
 ## 05-05-19
 * FIX: empty custom URL in create magento
