@@ -5,18 +5,23 @@ BOLD='\033[1m'
 ITALIC='\033[3m'
 GREEN='\033[1;32m'
 
+echo -e "${GREEN}Installing create-project${RESET}"
+
+read -p "Install in (~/bin) or " TARGET;
+echo "";
+if [[ -z "$TARGET" ]]; then TARGET="~/bin"; fi
+
 # Make sure our ouput folder exists
-if [ ! -d ~/bin ]; then mkdir ~/bin; fi
-if [ ! -d ~/bin/create-bin ]; then mkdir ~/bin/create-bin; fi
+if [ ! -d $TARGET ]; then mkdir $TARGET; fi
+if [ ! -d $TARGET/create-bin ]; then mkdir $TARGET/create-bin; fi
 
 # Create temp
-mkdir ~/bin/create-project-temp && cd ~/bin/create-project-temp
+mkdir $TARGET/create-project-temp && cd $TARGET/create-project-temp
 
 # Get task runner
-echo -e "${GREEN}Installing create-project${RESET}"
 curl -sS -O "https://raw.githubusercontent.com/GrimLink/create-project/master/create-project" &&
-cp create-project ~/bin/create-project &&
-chmod +x ~/bin/create-project
+cp create-project $TARGET/create-project &&
+chmod +x $TARGET/create-project
 
 # Get each task
 BINTASKS=(
@@ -32,12 +37,12 @@ BINTASKS=(
 echo -e "Getting the tasks.."
 for i in "${BINTASKS[@]}"; do
   curl -sS -O "https://raw.githubusercontent.com/GrimLink/create-project/master/create-bin/${i}" &&
-  cp $i ~/bin/create-bin/$i
+  cp $i $TARGET/create-bin/$i
   echo -e " [${GREEN}✓${RESET}] ${i}"
 done
 
 # Remove temp
-rm -r ~/bin/create-project-temp
+rm -r $TARGET/create-project-temp
 
 # Done message
 echo ""
