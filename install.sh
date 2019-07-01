@@ -7,9 +7,9 @@ GREEN='\033[1;32m'
 
 echo -e "${GREEN}Installing create-project${RESET}"
 
-read -p "Install in (~/bin) or " TARGET;
+read -p "Install in (${HOME}/bin) or " TARGET;
 echo "";
-if [[ -z "$TARGET" ]]; then TARGET="~/bin"; fi
+if [[ -z "$TARGET" ]]; then TARGET="${HOME}/bin"; fi
 
 # Make sure our ouput folder exists
 if [ ! -d $TARGET ]; then mkdir $TARGET; fi

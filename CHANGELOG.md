@@ -1,5 +1,8 @@
 # Changelog
 
+## 01-07-19
+* FIX: path option with $HOME instead of ~
+
 ## 30-06-19
 * ADD: installer
 * IMP: readme
