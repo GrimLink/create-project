@@ -42,7 +42,7 @@ for i in "${BINTASKS[@]}"; do
 done
 
 # Remove temp
-cd - && rm -r $TARGET/create-project-temp
+rm -r $TARGET/create-project-temp
 
 # Done message
 echo ""
