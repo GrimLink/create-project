@@ -68,4 +68,5 @@ wp core install \
   --title="${WPNAME}" \
   --admin_user="${USERNAME}" \
   --admin_password="${USERPASS}" \
-  --admin_email="${USEREMAIL}"
+  --admin_email="${USEREMAIL}" \
+  --skip-email
