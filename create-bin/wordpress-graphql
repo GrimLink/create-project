@@ -14,7 +14,7 @@ if [[ ! "$(basename $PWD)" == "${WPNAME}" ]]; then
   cd $WPNAME
 fi
 
-if [[ ! -d "wp-content" ]]; then
+if [ ! -d "wp-content" ]; then
   cd wp-content/plugins &&
   git clone git@github.com:wp-graphql/wp-graphql.git
   cd ../..
