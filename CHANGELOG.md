@@ -7,6 +7,7 @@
 * ADD: wp-gql task
 * ADD: default values to admin name/pass in wp
 * FIX: error on wp install with email send
+* FIX: if statement in wp-gql
 
 ## 01-07-19
 * FIX: path option with $HOME instead of ~
