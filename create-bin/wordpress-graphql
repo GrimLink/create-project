@@ -10,17 +10,23 @@ if ! command -v wp &> /dev/null; then
 fi
 
 # Install
-cd $WPNAME/wp-content/plugins
+if [ ! "$(basename $PWD)" == "${WPNAME}" ]; then
+  cd $WPNAME
+fi
 
-git clone git@github.com:wp-graphql/wp-graphql.git
+if [ ! -d "wp-content" ]; then
+  cd wp-content/plugins &&
+  git clone git@github.com:wp-graphql/wp-graphql.git
+  cd ../..
 
-cd ../..
+  # Enable
+  wp plugin activate wp-graphql
 
-# Enable
-wp plugin activate wp-graphql
+  # Configure to make the graphql endpoint work
+  wp option update permalink_structure '/%postname%'
 
-# Configure to make the graphql endpoint work
-wp option update permalink_structure '/%postname%'
-
-echo -e "${GREEN}Done${RESET} 🎉
-You can test your endpoint by adding /graphql after the url of ${WPNAME}"
+  echo -e "${GREEN}Done${RESET} 🎉"
+  echo -e "You can test your endpoint by adding /graphql after the url of ${WPNAME}"
+else
+  echo "No Wordpress instaltion found"
+fi
