@@ -29,7 +29,7 @@ if [[ -z "$DBPASS" ]]; then DBPASS="root"; fi
 if command -v valet &> /dev/null; then
   valet db create $DBNAME
 else
-  echo "First create a datebase for you Magento project"
+  echo "First create a datebase for you Wordpress project"
   read -rsn1 -p "When ready, press any key to continue"
 fi
 
