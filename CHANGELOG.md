@@ -1,5 +1,8 @@
 # Changelog
 
+## 13-07-19
+* FIX: email var
+
 ## 01-07-19
 * FIX: path option with $HOME instead of ~
 

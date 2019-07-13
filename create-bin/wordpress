@@ -44,8 +44,8 @@ elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   if command -v valet &> /dev/null; then valet secure; fi
 fi
 
-read -p "Email (${GITEMAIL}) or: " USEREMAIL
-if [[ -z "$USEREMAIL" ]]; then USEREMAIL="$GITEMAIL"; fi
+read -p "Email (${GITEMAIL}) or: " ADEMAIL
+if [[ -z "$ADEMAIL" ]]; then ADEMAIL="$GITEMAIL"; fi
 read -p "Admin name: " ADNAME;
 read -sp "Admin Password: " ADPASS;
 echo "";
