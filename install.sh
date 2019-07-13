@@ -27,6 +27,7 @@ chmod +x $TARGET/create-project
 BINTASKS=(
   'magento'
   'wordpress'
+  'wordpress-graphql'
   'react'
   'vue'
   'october'

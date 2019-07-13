@@ -4,6 +4,7 @@
 * FIX: email var
 * IMP: mage versions picker
 * ADD: default for name var
+* ADD: wp-gql task
 
 ## 01-07-19
 * FIX: path option with $HOME instead of ~

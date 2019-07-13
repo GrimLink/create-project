@@ -34,24 +34,39 @@ if [[ -z "$PROJECT_TYPE" ]]; then
 fi
 
 case "$PROJECT_TYPE" in
+  # Magento
   [mM][aA][gG][eE][nN][tT][oO]|[mM][aA][gG][eE])
     bash $(dirname "${BASH_SOURCE}")/create-bin/magento $@;
     ;;
+  # Wordpress
   [wW][oO][rR][dD][pP][rR][eE][sS][sS]|[wW][pP])
     bash $(dirname "${BASH_SOURCE}")/create-bin/wordpress $@;
     ;;
+  # Wordpress with GQL
+  [wW][oO][rR][dD][pP][rR][eE][sS][sS]-[gG][qQ][lL]|[wW][pP]-[gG][qQ][lL])
+    read -p "Install Wordpress? [N/y] " -n 1;
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      bash $(dirname "${BASH_SOURCE}")/create-bin/wordpress $@;
+    fi;
+    bash $(dirname "${BASH_SOURCE}")/create-bin/wordpress-graphql $@;
+    ;;
+  # React
   [rR][eE][aA][cC][tT])
     bash $(dirname "${BASH_SOURCE}")/create-bin/react $@;
     ;;
+  # Vue
   [vV][uU][eE])
     bash $(dirname "${BASH_SOURCE}")/create-bin/vue $@;
     ;;
+  # OctoberCMS
   [oO][cC][tT][oO][bB][eE][rR]|[oO][cC][tT])
     bash $(dirname "${BASH_SOURCE}")/create-bin/october $@;
     ;;
+  # Jigsaw
   [jJ][iI][gG][sS][aA][wW]|[jJ][iI][gG])
     bash $(dirname "${BASH_SOURCE}")/create-bin/jigsaw $@;
     ;;
+  # HTML
   [hH][tT][mM][lL])
     bash $(dirname "${BASH_SOURCE}")/create-bin/html $@;
     ;;
