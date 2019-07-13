@@ -3,6 +3,7 @@
 RESET='\033[0m'
 GREEN='\033[1;32m'
 WPNAME="$1"
+GITNAME="$(git config --global --get user.name)"
 GITEMAIL="$(git config --global --get user.email)"
 
 if [[ -z "$WPNAME" ]]; then
@@ -44,11 +45,13 @@ elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   if command -v valet &> /dev/null; then valet secure; fi
 fi
 
-read -p "Email (${GITEMAIL}) or: " ADEMAIL
-if [[ -z "$ADEMAIL" ]]; then ADEMAIL="$GITEMAIL"; fi
-read -p "Admin name: " ADNAME;
-read -sp "Admin Password: " ADPASS;
-echo "";
+read -p "Email (${GITEMAIL}) or: " USEREMAIL
+if [[ -z "$USEREMAIL" ]]; then USEREMAIL="$GITEMAIL"; fi
+read -p "Admin name (${GITNAME}) or: " USERNAME
+if [[ -z "$USERNAME" ]]; then USERNAME="$GITNAME"; fi
+read -sp "Password (admin123) or: " USERPASS
+if [[ -z "$USERPASS" ]]; then USERPASS="admin123"; fi
+echo ""
 
 mkdir $WPNAME &&
 cd $WPNAME &&
@@ -63,6 +66,6 @@ wp core config \
 wp core install \
   --url="${URL}" \
   --title="${WPNAME}" \
-  --admin_user="${ADNAME}" \
-  --admin_password="${ADPASS}" \
-  --admin_email="${ADEMAIL}"
+  --admin_user="${USERNAME}" \
+  --admin_password="${USERPASS}" \
+  --admin_email="${USEREMAIL}"
