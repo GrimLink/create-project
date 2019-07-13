@@ -2,6 +2,7 @@
 
 ## 13-07-19
 * FIX: email var
+* IMP: mage versions picker
 
 ## 01-07-19
 * FIX: path option with $HOME instead of ~

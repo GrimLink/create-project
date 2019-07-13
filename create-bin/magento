@@ -6,23 +6,19 @@ MAGE_NAME="$1"
 GITEMAIL="$(git config --global --get user.email)"
 
 if [[ -z "$MAGE_NAME" ]]; then
-  echo -e "${GREEN}The Magento install requires a name" && exit
+  echo "The Magento install requires a name!" && exit
 fi
 
-echo "Options are:"
-echo "  [ ] = Latest"
-echo "  [1] = 2.3 (Latest)"
-echo "  [2] = 2.2 (Latest)"
-echo "  [Custom] (Enter your own version)"
+echo "What Magento version do want to install?"
+echo "  - empty = Latest stable"
+echo "  - dev = Latest dev"
+echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
-  echo "Using latest version";
-elif [[ "$VERSION" == "1" ]]; then
-  echo "Using latest 2.3"
+  echo "Using latest stable version";
   MVERSION="=2.3.*"
-elif [[ "$VERSION" == "2" ]]; then
-  echo "Using version 2.2"
-  MVERSION="=2.2.*"
+elif [[ "$VERSION" == "dev" ]]; then
+  echo "Using latest version"
 else
   echo "Using version $VERSION"
   MVERSION="=$VERSION"
