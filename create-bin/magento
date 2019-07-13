@@ -3,6 +3,7 @@
 RESET='\033[0m'
 GREEN='\033[1;32m'
 MAGE_NAME="$1"
+GITNAME="$(git config --global --get user.name)"
 GITEMAIL="$(git config --global --get user.email)"
 
 if [[ -z "$MAGE_NAME" ]]; then
@@ -49,7 +50,7 @@ fi
 
 echo "Set URL"
 echo " - empty = http://${DBNAME}.test/"
-echo " - s or secure = https://${DBNAME}.test/"
+echo " - [s] or [secure] = https://${DBNAME}.test/"
 echo " - Or use your own"
 read URL
 if [[ -z "$URL" ]]; then
@@ -61,13 +62,16 @@ fi
 
 read -p "Email (${GITEMAIL}) or: " USEREMAIL
 if [[ -z "$USEREMAIL" ]]; then USEREMAIL="$GITEMAIL"; fi
-read -p "Firstname: " USERFIRST
-read -p "Lastname: " USERLAST
+read -p "Firstname (${GITNAME}) or: " USERFIRST
+if [[ -z "$USERFIRST" ]]; then USERFIRST="$GITNAME"; fi
+read -p "Lastname (admin) or: " USERLAST
+if [[ -z "$USERLAST" ]]; then USERLAST="admin"; fi
 TOLOWERNAME="$(echo "$USERFIRST" | tr '[:upper:]' '[:lower:]')"
 read -p "User name (admin_${TOLOWERNAME}) or: " USERNAME
 if [[ -z "$USERNAME" ]]; then USERNAME="admin_${TOLOWERNAME}"; fi
 read -sp "Password (admin123) or: " USERPASS
 if [[ -z "$USERPASS" ]]; then USERPASS="admin123"; fi
+echo ""
 read -p "Language (en_US) or: " LANG
 if [[ -z "$LANG" ]]; then LANG="en_US"; fi
 read -p "Currency (EUR) or: " CUR
@@ -108,21 +112,23 @@ elif [[ -e ~/.composer/auth.json ]]; then
   cp ~/.composer/auth.json auth.json
 fi
 
-read -p "Also install sample data? (Y/n) "
-echo ""
-if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then bin/magento sampledata:deploy; fi
-
-read -p "Set mode to developer? (Y/n) "
+read -p "Also install sample data? [N/y] "
 echo ""
 if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+  bin/magento sampledata:deploy;
+fi
+
+read -p "Set mode to developer? [Y/n] "
+echo ""
+if [[ $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  bin/magento deploy:mode:set production
+else
   bin/magento deploy:mode:set developer
   bin/magento cache:disable layout block_html full_page
   echo "setting session lifetime 86400"
   bin/magento config:set admin/security/session_lifetime 86400
   echo "setting admin password lifetime ∞"
   bin/magento config:set admin/security/password_lifetime ""
-else
-  bin/magento deploy:mode:set production
 fi
 
 # Lasty run the setup:upgrade
