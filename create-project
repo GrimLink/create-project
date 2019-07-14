@@ -65,6 +65,7 @@ case "$PROJECT_TYPE" in
     ;;
   update)
     bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/master/install.sh)"
+    ;;
   *)
     echo "No valid project option was given";
     ;;
