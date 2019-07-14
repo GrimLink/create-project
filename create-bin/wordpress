@@ -3,7 +3,7 @@
 RESET='\033[0m'
 GREEN='\033[1;32m'
 WPNAME="$1"
-GITNAME="$(git config --global --get user.name)"
+GITNAME="$(git config --global --get user.name | head -n1 | cut -d " " -f1)"
 GITEMAIL="$(git config --global --get user.email)"
 
 if [[ -z "$WPNAME" ]]; then
@@ -70,3 +70,10 @@ wp core install \
   --admin_password="${USERPASS}" \
   --admin_email="${USEREMAIL}" \
   --skip-email
+
+read -p "Also install plugin to disable RestApi [N/y] " -n 1;
+echo "";
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  wp plugin install disable-json-api
+  wp plugin activate disable-json-api
+fi;

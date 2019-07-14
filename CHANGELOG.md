@@ -1,5 +1,8 @@
 # Changelog
 
+## 14-07-19
+* ADD: option to disable RestAPI
+
 ## 13-07-19
 * FIX: email var
 * IMP: mage versions picker
