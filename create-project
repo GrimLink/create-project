@@ -63,6 +63,8 @@ case "$PROJECT_TYPE" in
   [hH][tT][mM][lL])
     bash $(dirname "${BASH_SOURCE}")/create-bin/html $@;
     ;;
+  update)
+    bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/master/install.sh)"
   *)
     echo "No valid project option was given";
     ;;

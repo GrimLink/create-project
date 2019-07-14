@@ -3,6 +3,7 @@
 ## 14-07-19
 * ADD: option to disable RestAPI
 * IMP: default user name
+* ADD: update task
 
 ## 13-07-19
 * FIX: email var

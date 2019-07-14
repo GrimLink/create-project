@@ -39,3 +39,8 @@ with the name and email added to you user.
 Else create-project will leave these default values empty.
 Which could cause an issue.
 If you also leave them empty when creating an project.
+
+## TODO
+
+- [x] add update task
+- [ ] add version to see if you running the latest
