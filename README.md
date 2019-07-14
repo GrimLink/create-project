@@ -30,3 +30,12 @@ create-project test magento
 After this the installer task will do it's thing.
 
 _Complexer tasks will ask for more information._
+
+## Notes and FAQ
+
+Create-project assumes that you have an gitconfig
+with the name and email added to you user.
+
+Else create-project will leave these default values empty.
+Which could cause an issue.
+If you also leave them empty when creating an project.
