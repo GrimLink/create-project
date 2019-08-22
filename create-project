@@ -7,6 +7,7 @@ OPTIONS=(
   'wordpress'
   'react'
   'vue'
+  'gridsome'
   'october'
   'jigsaw'
   'html'
@@ -53,6 +54,9 @@ case "$PROJECT_TYPE" in
     ;;
   vue)
     bash $(dirname "${BASH_SOURCE}")/create-bin/vue $@;
+    ;;
+  gridsome|[gG][rR][iI][dD])
+    bash $(dirname "${BASH_SOURCE}")/create-bin/gridsome $@;
     ;;
   octobercms|[oO][cC][tT])
     bash $(dirname "${BASH_SOURCE}")/create-bin/october $@;

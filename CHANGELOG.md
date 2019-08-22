@@ -1,29 +1,35 @@
 # Changelog
 
-## 14-07-19
-* ADD: option to disable RestAPI
+## 2019-08-09
+* ADD: gridsome option
+
+## 2019-07-14
+* ADD:
+  * option to disable RestAPI
+  * update task
 * IMP: default user name
-* ADD: update task
 
-## 13-07-19
-* FIX: email var
+## 2019-07-13
+* ADD:
+  * default for name var
+  * wp-gql task
+  * default values to admin name/pass in wp
+* FIX:
+  * email var
+  * error on wp install with email send
+  * if statement in wp-gql
 * IMP: mage versions picker
-* ADD: default for name var
-* ADD: wp-gql task
-* ADD: default values to admin name/pass in wp
-* FIX: error on wp install with email send
-* FIX: if statement in wp-gql
 
-## 01-07-19
+## 2019-07-01
 * FIX: path option with $HOME instead of ~
 
-## 30-06-19
+## 2019-06-30
 * ADD: installer
 * IMP: readme
 
-## 05-05-19
+## 2019-05-05
 * FIX: empty custom URL in create magento
 * IMP: formating
 
-## 04-05-19
-* initial commit
+## 2019-04-05
+* Initial commit 🎉

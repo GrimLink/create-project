@@ -1,0 +1,38 @@
+#!/bin/bash
+
+PROJECT_NAME="$1"
+
+if [[ -z "$PROJECT_NAME" ]]; then
+  echo "Grisome needs a project name" && exit
+fi
+
+read -p "Add a starter? (leave blank for no) " STARTER;
+if [[ -n "$STARTER" ]]; then
+    gridsome create $PROJECT_NAME $STARTER
+else
+    gridsome create $PROJECT_NAME
+fi
+
+cd $PROJECT_NAME
+
+if [[ -z "$STARTER" ]]; then
+  read -p "Also install @gridsome/source-filesystem? [N/y] "
+  if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+    if [[ -f "yarn.lock" ]]; then
+      yarn add @gridsome/source-filesystem
+    else
+      npm install @gridsome/source-filesystem
+    fi
+  fi
+
+  read -p "Also install @gridsome/transformer-remark? [N/y] "
+  if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+    if [[ -f "yarn.lock" ]]; then
+      yarn add @gridsome/transformer-remark
+    else
+      npm install @gridsome/transformer-remark
+    fi
+  fi
+fi
+
+gridsome develop
