@@ -31,16 +31,10 @@ After this the installer task will do it's thing.
 
 _Complexer tasks will ask for more information._
 
-## Notes and FAQ
+## FAQ
 
-Create-project assumes that you have an gitconfig
-with the name and email added to you user.
+Create-project requires that you have an gitconfig file
+with the name and email set.
 
-Else create-project will leave these default values empty.
-Which could cause an issue.
-If you also leave them empty when creating an project.
-
-## TODO
-
-- [x] add update task
-- [ ] add version to see if you running the latest
+If not create-project will leave these default values empty.
+Which can cause an issues, if left blank when asked by the setup steps.
