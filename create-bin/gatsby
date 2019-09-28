@@ -1,0 +1,30 @@
+#!/bin/bash
+
+PROJECT_NAME="$1"
+
+if [[ -z "$PROJECT_NAME" ]]; then
+  echo "Gatsby needs a project name" && exit
+fi
+
+gatsby new $PROJECT_NAME
+cd $PROJECT_NAME
+
+read -p "Also install gatsby-source-filesystem? [N/y] "
+if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+  if [[ -f "yarn.lock" ]]; then
+    yarn add gatsby-source-filesystem
+  else
+    npm install gatsby-source-filesystem
+  fi
+fi
+
+read -p "Also install gatsby-transformer-remark? [N/y] "
+if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+  if [[ -f "yarn.lock" ]]; then
+    yarn add gatsby-transformer-remark
+  else
+    npm install gatsby-transformer-remark
+  fi
+fi
+
+gatsby develop

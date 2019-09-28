@@ -1,5 +1,8 @@
 # Changelog
 
+## 2019-09-28
+* ADD: gatsby option
+
 ## 2019-08-09
 * ADD: gridsome option
 
