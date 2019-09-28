@@ -6,6 +6,7 @@ OPTIONS=(
   'magento'
   'wordpress'
   'react'
+  'gatsby'
   'vue'
   'gridsome'
   'october'
@@ -52,10 +53,13 @@ case "$PROJECT_TYPE" in
   react)
     bash $(dirname "${BASH_SOURCE}")/create-bin/react $@;
     ;;
+  gatsby)
+    bash $(dirname "${BASH_SOURCE}")/create-bin/gatsby $@;
+    ;;
   vue)
     bash $(dirname "${BASH_SOURCE}")/create-bin/vue $@;
     ;;
-  gridsome|[gG][rR][iI][dD])
+  gridsome)
     bash $(dirname "${BASH_SOURCE}")/create-bin/gridsome $@;
     ;;
   octobercms|[oO][cC][tT])

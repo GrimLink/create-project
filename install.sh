@@ -29,6 +29,7 @@ BINTASKS=(
   'wordpress'
   'wordpress-graphql'
   'react'
+  'gatsby'
   'vue'
   'gridsome'
   'october'
