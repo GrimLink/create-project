@@ -15,7 +15,7 @@ if [[ -z "$TARGET" ]]; then TARGET="${HOME}/bin"; fi
 if [ ! -d $TARGET ]; then mkdir $TARGET; fi
 if [ ! -d $TARGET/create-bin ]; then mkdir $TARGET/create-bin; fi
 
-# Create temp
+# Create temp copy folder
 mkdir $TARGET/create-project-temp && cd $TARGET/create-project-temp
 
 # Get task runner
@@ -27,7 +27,6 @@ chmod +x $TARGET/create-project
 BINTASKS=(
   'magento'
   'wordpress'
-  'wordpress-graphql'
   'react'
   'gatsby'
   'vue'
@@ -41,10 +40,10 @@ echo -e "Getting the tasks.."
 for i in "${BINTASKS[@]}"; do
   curl -sS -O "https://raw.githubusercontent.com/GrimLink/create-project/master/create-bin/${i}" &&
   cp $i $TARGET/create-bin/$i
-  echo -e " [${GREEN}✓${RESET}] ${i}"
+  echo -e "[${GREEN}✓${RESET}] ${i}"
 done
 
-# Remove temp
+# Remove temp copy folder
 rm -r $TARGET/create-project-temp
 
 # Done message

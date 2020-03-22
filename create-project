@@ -42,14 +42,6 @@ case "$PROJECT_TYPE" in
   wordpress|[wW][pP])
     bash $(dirname "${BASH_SOURCE}")/create-bin/wordpress $@;
     ;;
-  wordpress-graphql|[wW][pP]-[gG][qQ][lL])
-    read -p "Install Wordpress? [N/y] " -n 1;
-    echo ""
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      bash $(dirname "${BASH_SOURCE}")/create-bin/wordpress $@;
-    fi;
-    bash $(dirname "${BASH_SOURCE}")/create-bin/wordpress-graphql $@;
-    ;;
   react)
     bash $(dirname "${BASH_SOURCE}")/create-bin/react $@;
     ;;

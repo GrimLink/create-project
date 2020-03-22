@@ -6,10 +6,17 @@ WPNAME="$1"
 GITNAME="$(git config --global --get user.name | head -n1 | cut -d " " -f1)"
 GITEMAIL="$(git config --global --get user.email)"
 
+# Check if dependacy exist
+if ! command -v wp &> /dev/null; then
+  echo "wp-cli is not installed please install it via https://wp-cli.org/" &&
+  exit;
+fi
+
 if [[ -z "$WPNAME" ]]; then
   echo "The WP install requires a name" && exit
 fi
 
+# Setup for instalation
 read -p "DB Host (localhost) or: " DBHOST
 if [[ -z "$DBHOST" ]]; then DBHOST="localhost"; fi
 read -p "DB name: ${WPNAME} or " DBNAME
@@ -53,6 +60,7 @@ read -sp "Password (admin123) or: " USERPASS
 if [[ -z "$USERPASS" ]]; then USERPASS="admin123"; fi
 echo ""
 
+# Run isntallation
 mkdir $WPNAME &&
 cd $WPNAME &&
 wp core download &&
@@ -71,9 +79,40 @@ wp core install \
   --admin_email="${USEREMAIL}" \
   --skip-email
 
-read -p "Also install plugin to disable RestApi [N/y] " -n 1;
+# Set permalink structure to make endpoints work
+wp option update permalink_structure '/%postname%'
+
+# Check if the installation went well
+if [ ! -d "wp-content" ]; then
+  echo "Something went wrong, no wp-content folder found found"
+  exit;
+fi;
+
+# Add aditonal plugins
+read -p "Also run WP config steps [Y/n] " -n 1;
 echo "";
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-  wp plugin install disable-json-api
-  wp plugin activate disable-json-api
+if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+  read -p "Add Duplicate Post? [N/y] " -n 1;
+  echo "";
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    wp plugin install disable-json-api
+    wp plugin activate disable-json-api
+  fi;
+
+  read -p "Add Disable Rest Api? [N/y] " -n 1;
+  echo "";
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    wp plugin install disable-json-api
+    wp plugin activate disable-json-api
+  fi;
+
+  read -p "Add GraphQL Api? [N/y] " -n 1;
+  echo "";
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    cd wp-content/plugins &&
+    git clone git@github.com:wp-graphql/wp-graphql.git
+    cd ../..
+    wp plugin activate wp-graphql
+    echo "You can test your endpoint via /graphql";
+  fi;
 fi;
