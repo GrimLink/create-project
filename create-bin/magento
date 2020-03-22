@@ -112,7 +112,7 @@ elif [[ -e ~/.composer/auth.json ]]; then
   cp ~/.composer/auth.json auth.json
 fi
 
-read -p "Also install sample data? [N/y] "
+read -p "Also install sample data? [y/N] "
 echo ""
 if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
   bin/magento sampledata:deploy;

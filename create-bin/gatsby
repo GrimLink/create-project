@@ -9,7 +9,7 @@ fi
 gatsby new $PROJECT_NAME
 cd $PROJECT_NAME
 
-read -p "Also install gatsby-source-filesystem? [N/y] "
+read -p "Also install gatsby-source-filesystem? [y/N] "
 if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
   if [[ -f "yarn.lock" ]]; then
     yarn add gatsby-source-filesystem
@@ -18,7 +18,7 @@ if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
   fi
 fi
 
-read -p "Also install gatsby-transformer-remark? [N/y] "
+read -p "Also install gatsby-transformer-remark? [y/N] "
 if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
   if [[ -f "yarn.lock" ]]; then
     yarn add gatsby-transformer-remark
