@@ -92,17 +92,23 @@ fi;
 read -p "Also run WP config steps [Y/n] "
 echo ""
 if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-  read -p "Add Duplicate Post? [y/N] "
+  read -p "Add Duplicate Post? [Y/n] "
   echo ""
-  if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-    wp plugin install duplicate-post
+  if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+    wp plugin install duplicate-post &&
     wp plugin activate duplicate-post
+  fi;
+
+  read -p "Add wps-hide-login? [Y/n] "
+  echo ""
+  if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+    wp plugin install wps-hide-login
   fi;
 
   read -p "Add Disable Rest Api? [y/N] "
   echo ""
   if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-    wp plugin install disable-json-api
+    wp plugin install disable-json-api &&
     wp plugin activate disable-json-api
   fi;
 
@@ -110,9 +116,9 @@ if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
   echo ""
   if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
     cd wp-content/plugins &&
-    git clone git@github.com:wp-graphql/wp-graphql.git
-    cd ../..
-    wp plugin activate wp-graphql
+    git clone git@github.com:wp-graphql/wp-graphql.git &&
+    cd ../.. &&
+    wp plugin activate wp-graphql &&
     echo "You can test your endpoint via /graphql";
   fi;
 fi;
