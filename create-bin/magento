@@ -57,7 +57,6 @@ if [[ -z "$URL" ]]; then
   URL="http://${DBNAME}.test/"
 elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   URL="https://${DBNAME}.test/"
-  if command -v valet &> /dev/null; then valet secure; fi
 fi
 
 read -p "Email (${GITEMAIL}) or: " USEREMAIL
@@ -85,6 +84,10 @@ echo ""
 composer create-project \
   --repository-url=https://repo.magento.com/ magento/project-community-edition$MVERSION $MAGE_NAME &&
 cd $MAGE_NAME
+if [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
+  echo "Setting domain ssl certificate"
+  if command -v valet &> /dev/null; then valet secure; fi
+fi
 
 bin/magento setup:install \
   --base-url="${URL}" \
