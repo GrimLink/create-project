@@ -1,5 +1,15 @@
 # Changelog
 
+## [2020-03-31]
+* ADD:
+  * quick install option
+  * plugin install options
+  * graphql option to wordpress task
+* IMP: install node projects via npx (Vue, React)
+* DEL:
+  * html option
+  * wordpress-graphql
+
 ## 2019-09-28
 * ADD:
   * gatsby option

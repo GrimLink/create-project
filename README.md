@@ -1,9 +1,14 @@
 # Create Project
 
 Create project is a bash script
-that runs the setup needed for each project type.
+that runs the setup steps needed for each project type.
 
-From a simple Vue project to a complex Magento project.
+From a simple Vue project to a complex Magento 2 project.
+
+- [Installation](#installation)
+- [How to use](#how-to-use)
+- [Update](#update)
+- [Requirements](#requirements)
 
 ## Installation
 
@@ -15,26 +20,40 @@ bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/m
 
 This will download and copy the files to your target folder.
 
-## How to
+## How to use
 
-Run `create-project` to start the installer
-
-Create-project will always ask for the folder location and project type, if they are not added as paramters.
-
-To run it with paramters
+Run create-project via:
 
 ```bash
-create-project test magento
+create-project <NAME> [<PROJECT_TYPE>]
 ```
 
-After this the installer task will do it's thing.
+Create-project will always ask for the name.
+As this value is required.
 
-_Complexer tasks will ask for more information._
+The project type is optional.
+If left blank create-project will ask for this.
+Except if your in a folder with the same name as the project type.
 
-## FAQ
+Each task will ask for questions before hand.
+And only after that run the installer.
 
-Create-project requires that you have an gitconfig file
-with the name and email set.
+So you can get a coffee ☕️
 
-If not create-project will leave these default values empty.
-Which can cause an issues, if left blank when asked by the setup steps.
+## Update
+
+Simply run `create-project update` and follow the steps.
+
+_Same as installer._
+
+## Requirements
+
+Create project assumes you have a `.gitconfig` file.
+With the username and email.
+
+Create project needs the following tools installed on your machine.
+To run certian tasks.
+
+- node
+- php
+- composer
