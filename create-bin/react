@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: add parcel setup
+
 NAME="$1"
 SKIP="false"
 
