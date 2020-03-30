@@ -21,8 +21,7 @@ if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
   SKIP="true"
 fi;
 
-# Build app
-npx create-react-app $NAME --use-npm &&
+npx create-react-app $NAME --use-npm
 cd $NAME
 
 if [[ $SKIP == "true" ]]; then

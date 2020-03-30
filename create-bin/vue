@@ -18,8 +18,7 @@ if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
   SKIP="true"
 fi;
 
-# Build app
-vue create $NAME &&
+npx vue create $NAME
 cd $NAME
 
 if [[ $SKIP == "true" ]]; then

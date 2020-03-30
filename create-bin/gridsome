@@ -23,14 +23,7 @@ if [[ $SKIP == "false" ]]; then
   read -p "Add a starter? (leave blank for default): " TEMPLATE;
 fi;
 
-# Check if dependacy exist
-if command -v gridsome &> /dev/null; then
-  gridsome create $NAME $TEMPLATE
-else
-  echo "Installing via npx"
-  npx gridsome create $NAME $TEMPLATE
-fi
-
+npx gridsome create $NAME $TEMPLATE
 cd $NAME
 
 if [[ $SKIP == "true" ]]; then

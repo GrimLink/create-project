@@ -23,14 +23,7 @@ if [[ $SKIP == "false" ]]; then
   read -p "Add a starter? (leave blank for default): " TEMPLATE;
 fi;
 
-# Check if dependacy exist
-if command -v gatsby &> /dev/null; then
-  gatsby new $NAME $TEMPLATE
-else
-  echo "Installing via npx"
-  npx gatsby new $NAME $TEMPLATE
-fi
-
+npx gatsby new $NAME $TEMPLATE
 cd $NAME
 
 if [[ $SKIP == "true" ]]; then
