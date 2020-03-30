@@ -13,6 +13,10 @@ OPTIONS=(
   'jigsaw'
 );
 
+if [[ $NAME == "update" ]]; then
+  bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/master/install.sh)" && exit;
+fi
+
 # Check if parent folder is one of the options
 if [[ -z "$PROJECT_TYPE" ]]; then
   for i in "${OPTIONS[@]}"; do
@@ -57,9 +61,6 @@ case "$PROJECT_TYPE" in
     ;;
   jigsaw|[jJ][iI][gG])
     bash $(dirname "${BASH_SOURCE}")/create-bin/jigsaw $@;
-    ;;
-  update)
-    bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/master/install.sh)";
     ;;
   *)
     echo "No valid project option was given";
