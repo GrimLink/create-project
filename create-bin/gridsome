@@ -1,19 +1,21 @@
 #!/bin/bash
 
-PROJECT_NAME="$1"
+NAME="$1"
 
-if [[ -z "$PROJECT_NAME" ]]; then
+if [[ -z "$NAME" ]]; then
   echo "Grisome needs a project name" && exit
 fi
 
-read -p "Add a starter? (leave blank for no) " STARTER;
-if [[ -n "$STARTER" ]]; then
-    gridsome create $PROJECT_NAME $STARTER
+read -p "Add a starter? (leave blank for default) " STARTER;
+# Check if dependacy exist
+if command -v gridsome &> /dev/null; then
+  gridsome create $NAME$STARTER
 else
-    gridsome create $PROJECT_NAME
+  echo "Installing via npx"
+  npx gridsome create $NAME$STARTER
 fi
 
-cd $PROJECT_NAME
+cd $NAME
 
 if [[ -z "$STARTER" ]]; then
   read -p "Also install @gridsome/source-filesystem? [y/N] "

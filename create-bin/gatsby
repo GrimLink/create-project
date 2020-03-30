@@ -1,13 +1,19 @@
 #!/bin/bash
 
-PROJECT_NAME="$1"
+NAME="$1"
 
-if [[ -z "$PROJECT_NAME" ]]; then
+if [[ -z "$NAME" ]]; then
   echo "Gatsby needs a project name" && exit
 fi
 
-gatsby new $PROJECT_NAME
-cd $PROJECT_NAME
+# Check if dependacy exist
+if command -v gatsby &> /dev/null; then
+  gatsby new $NAME
+else
+  echo "Installing via npx"
+  npx gatsby new $NAME
+fi
+cd $NAME
 
 read -p "Also install gatsby-source-filesystem? [y/N] "
 if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
