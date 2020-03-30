@@ -1,12 +1,36 @@
 #!/bin/bash
 
-# Vue handels all the magic for us
-# So no aditional stuff is needed
-if [[ -n "$1" ]]; then
-  vue create $1 &&
-  cd $1 &&
-  npm run serve
-else
-  vue create . &&
-  npm run serve
+NAME="$1"
+SKIP="false"
+
+PLUGINS=(
+  @fylgja/utilkit
+);
+
+if [[ -z "$NAME" ]]; then
+  echo "The Vue install requires a name" && exit
 fi
+
+read -p "Run quick install? [Y/n] " && echo ""
+if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  SKIP="true"
+fi;
+
+# Build app
+vue create $NAME &&
+cd $NAME
+
+if [[ $SKIP == "true" ]]; then
+  for i in "${PLUGINS[@]}"; do
+    npm install $i
+  done;
+else
+  for i in "${PLUGINS[@]}"; do
+    read -p "Also install $i? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      npm install $i
+    fi
+  done;
+fi
+
+npm run serve
