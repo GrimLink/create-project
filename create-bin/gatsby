@@ -1,36 +1,58 @@
 #!/bin/bash
 
 NAME="$1"
+TEMPLATE=""
+SKIP="false"
+
+PLUGINS=(
+  gatsby-source-filesystem
+  gatsby-transformer-remark
+  @fylgja/utilkit
+);
 
 if [[ -z "$NAME" ]]; then
   echo "Gatsby needs a project name" && exit
 fi
 
+read -p "Run quick install? [Y/n] "
+echo ""
+if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  SKIP="true"
+fi;
+
+if [[ $SKIP == "false" ]]; then
+  read -p "Add a starter? (leave blank for default): " TEMPLATE;
+fi;
+
 # Check if dependacy exist
 if command -v gatsby &> /dev/null; then
-  gatsby new $NAME
+  gatsby new $NAME $TEMPLATE
 else
   echo "Installing via npx"
-  npx gatsby new $NAME
+  npx gatsby new $NAME $TEMPLATE
 fi
+
 cd $NAME
 
-read -p "Also install gatsby-source-filesystem? [y/N] "
-if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-  if [[ -f "yarn.lock" ]]; then
-    yarn add gatsby-source-filesystem
-  else
-    npm install gatsby-source-filesystem
-  fi
-fi
-
-read -p "Also install gatsby-transformer-remark? [y/N] "
-if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-  if [[ -f "yarn.lock" ]]; then
-    yarn add gatsby-transformer-remark
-  else
-    npm install gatsby-transformer-remark
-  fi
+if [[ $SKIP == "true" ]]; then
+  for i in "${PLUGINS[@]}"; do
+    if [[ -f "yarn.lock" ]]; then
+      yarn add $i
+    else
+      npm install $i
+    fi
+  done;
+else
+  for i in "${PLUGINS[@]}"; do
+    read -p "Also install $i? [Y/n] "
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      if [[ -f "yarn.lock" ]]; then
+        yarn add $i
+      else
+        npm install $i
+      fi
+    fi
+  done;
 fi
 
 gatsby develop

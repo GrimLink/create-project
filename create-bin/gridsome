@@ -1,40 +1,58 @@
 #!/bin/bash
 
 NAME="$1"
+TEMPLATE=""
+SKIP="false"
+
+PLUGINS=(
+  @gridsome/source-filesystem
+  @gridsome/transformer-remark
+  @fylgja/utilkit
+);
 
 if [[ -z "$NAME" ]]; then
-  echo "Grisome needs a project name" && exit
+  echo "Gridsome needs a project name" && exit
 fi
 
-read -p "Add a starter? (leave blank for default) " STARTER;
+read -p "Run quick install? [Y/n] "
+echo ""
+if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  SKIP="true"
+fi;
+
+if [[ $SKIP == "false" ]]; then
+  read -p "Add a starter? (leave blank for default): " TEMPLATE;
+fi;
+
 # Check if dependacy exist
 if command -v gridsome &> /dev/null; then
-  gridsome create $NAME$STARTER
+  gridsome create $NAME $TEMPLATE
 else
   echo "Installing via npx"
-  npx gridsome create $NAME$STARTER
+  npx gridsome create $NAME $TEMPLATE
 fi
 
 cd $NAME
 
-if [[ -z "$STARTER" ]]; then
-  read -p "Also install @gridsome/source-filesystem? [y/N] "
-  if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+if [[ $SKIP == "true" ]]; then
+  for i in "${PLUGINS[@]}"; do
     if [[ -f "yarn.lock" ]]; then
-      yarn add @gridsome/source-filesystem
+      yarn add $i
     else
-      npm install @gridsome/source-filesystem
+      npm install $i
     fi
-  fi
-
-  read -p "Also install @gridsome/transformer-remark? [y/N] "
-  if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-    if [[ -f "yarn.lock" ]]; then
-      yarn add @gridsome/transformer-remark
-    else
-      npm install @gridsome/transformer-remark
+  done;
+else
+  for i in "${PLUGINS[@]}"; do
+    read -p "Also install $i? [Y/n] "
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      if [[ -f "yarn.lock" ]]; then
+        yarn add $i
+      else
+        npm install $i
+      fi
     fi
-  fi
+  done;
 fi
 
 gridsome develop
