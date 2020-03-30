@@ -5,11 +5,13 @@ BOLD='\033[1m'
 ITALIC='\033[3m'
 GREEN='\033[1;32m'
 
-if [[ -z "$1" ]]; then
+JIG_NAME="$1"
+
+if [[ -z "$JIG_NAME" ]]; then
   echo -e "${GREEN}Creating Jigsaw project in current folder${RESET}"
   echo ""
 else
-  echo -e "${GREEN}Creating Jigsaw project in ${1}${RESET}"
+  echo -e "${GREEN}Creating Jigsaw project in ${JIG_NAME}${RESET}"
   echo ""
 fi
 
@@ -26,9 +28,9 @@ else
   INIT="init ${TEMPLATE}"
 fi
 
-if [[ -n "$1" ]]; then
-  mkdir $1 &&
-  cd $1 &&
+if [[ -n "$JIG_NAME" ]]; then
+  mkdir $JIG_NAME
+  cd $JIG_NAME
   composer require tightenco/jigsaw &&
   ./vendor/bin/jigsaw $INIT
 else
