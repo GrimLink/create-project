@@ -11,7 +11,6 @@ OPTIONS=(
   'gridsome'
   'october'
   'jigsaw'
-  'html'
 );
 
 # Check if parent folder is one of the options
@@ -59,9 +58,6 @@ case "$PROJECT_TYPE" in
     ;;
   jigsaw|[jJ][iI][gG])
     bash $(dirname "${BASH_SOURCE}")/create-bin/jigsaw $@;
-    ;;
-  [hH][tT][mM][lL])
-    bash $(dirname "${BASH_SOURCE}")/create-bin/html $@;
     ;;
   update)
     bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/master/install.sh)";

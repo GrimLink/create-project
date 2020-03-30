@@ -33,7 +33,6 @@ BINTASKS=(
   'gridsome'
   'october'
   'jigsaw'
-  'html'
 );
 
 echo -e "Getting the tasks.."
