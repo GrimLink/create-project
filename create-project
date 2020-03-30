@@ -24,14 +24,13 @@ fi
 
 # Ask for an type if not set
 if [[ -z "$PROJECT_TYPE" ]]; then
-  echo "";
-  echo "Options are:";
+  echo ""
+  echo "Options are:"
   for i in "${OPTIONS[@]}"; do
     echo " - ${i}"
   done
-  echo "";
-  read -p "Project type: " PROJECT_TYPE;
-  echo "";
+  echo ""
+  read -p "Project type: " PROJECT_TYPE && echo ""
 fi
 
 case "$PROJECT_TYPE" in
