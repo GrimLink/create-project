@@ -31,6 +31,7 @@ BINTASKS=(
   'gatsby'
   'vue'
   'gridsome'
+  'vuestorefront'
   'october'
   'jigsaw'
   'html'

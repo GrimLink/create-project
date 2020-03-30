@@ -1,0 +1,38 @@
+#!/bin/bash
+
+if [[ -z "$MAGE_NAME" ]]; then
+  echo "The Magento install requires a name!" && exit
+fi
+
+read -p "Setup Magento store [N/y] via setup steps" -n 1;
+echo "";
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    # echo "1: Create a Magento projet via create-project or other means.";
+    # echo "2: When done also install vsbridge-indexer, via the steps from https://github.com/DivanteLtd/magento2-vsbridge-indexer";
+    # TODO Add config steps
+    echo "TODO: no setup steps added"
+fi;
+
+read -p "Setup VueSF API [N/y] " -n 1;
+echo "";
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    read -p "Install in (VueSF-API) or: " PROJECT
+    if [[ -z "$PROJECT" ]]; then PROJECT="VueSF-API"; fi
+    git clone git@github.com:DivanteLtd/vue-storefront-api.git $PROJECT &&
+    cd $PROJECT &&
+    cp config/default.json config/local.json
+    # TODO Add config steps
+    yarn
+fi;
+
+read -p "Setup VueSF [Y/n] " -n 1;
+echo "";
+if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+    read -p "Install in (VueSF) or: " PROJECT
+    if [[ -z "$PROJECT" ]]; then PROJECT="VueSF"; fi
+    git clone git@github.com:DivanteLtd/vue-storefront.git $PROJECT &&
+    cd $PROJECT &&
+    cp config/default.json config/local.json
+    # TODO Add config steps
+    yarn
+fi;

@@ -54,6 +54,9 @@ case "$PROJECT_TYPE" in
   gridsome)
     bash $(dirname "${BASH_SOURCE}")/create-bin/gridsome $@;
     ;;
+  vuestorefront|[vV][uU][eE][sS][fF])
+    bash $(dirname "${BASH_SOURCE}")/create-bin/vuestorefront $@;
+    ;;
   octobercms|[oO][cC][tT])
     bash $(dirname "${BASH_SOURCE}")/create-bin/october $@;
     ;;
