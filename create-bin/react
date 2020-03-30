@@ -6,11 +6,11 @@ GREEN='\033[1;32m'
 # Build app
 if [[ -n "$1" ]]; then
   echo -e "${GREEN}Creating React App in ${1}${RESET}"
-  npx create-react-app $1 &&
+  npx create-react-app $1 --use-npm &&
   cd $1 &&
 else
   echo -e "${GREEN}Creating React App in current folder${RESET}"
-  npx create-react-app . &&
+  npx create-react-app . --use-npm &&
 fi
 
 # Make config so absolute imports are used
