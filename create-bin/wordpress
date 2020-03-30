@@ -1,10 +1,15 @@
 #!/bin/bash
 
-RESET='\033[0m'
-GREEN='\033[1;32m'
-WPNAME="$1"
 GITNAME="$(git config --global --get user.name | head -n1 | cut -d " " -f1)"
 GITEMAIL="$(git config --global --get user.email)"
+NAME="$1"
+SKIP="false"
+
+PLUGINS=(
+  kadence-blocks
+  duplicate-post
+  disable-json-api
+);
 
 # Check if dependacy exist
 if ! command -v wp &> /dev/null; then
@@ -12,25 +17,26 @@ if ! command -v wp &> /dev/null; then
   exit;
 fi
 
-if [[ -z "$WPNAME" ]]; then
+if [[ -z "$NAME" ]]; then
   echo "The WP install requires a name" && exit
 fi
 
-# Setup for instalation
-read -p "DB Host (localhost) or: " DBHOST
-if [[ -z "$DBHOST" ]]; then DBHOST="localhost"; fi
-read -p "DB name: ${WPNAME} or " DBNAME
-if [[ -z "$DBNAME" ]]; then
-  if [[ -n "$WPNAME" ]]; then
-    DBNAME="${WPNAME}"
-  else
-    echo "The DBName is required" && exit
-  fi
+read -p "Run quick install? [Y/n] " && echo ""
+if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  SKIP="true"
 fi
 
-read -p "DB User (root) or: " DBUSER
+# Setup for instalation
+if [[ $SKIP == "false" ]]; then
+  read -p "DB Host (localhost) or: " DBHOST && echo ""
+  read -p "DB name: ${NAME} or " DBNAME && echo ""
+  read -p "DB User (root) or: " DBUSER && echo ""
+  read -p "DB Password (root) or: " DBPASS && echo ""
+fi
+
+if [[ -z "$DBHOST" ]]; then DBHOST="localhost"; fi
+if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
 if [[ -z "$DBUSER" ]]; then DBUSER="root"; fi
-read -p "DB Password (root) or: " DBPASS
 if [[ -z "$DBPASS" ]]; then DBPASS="root"; fi
 
 if command -v valet &> /dev/null; then
@@ -51,17 +57,19 @@ elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   URL="https://${DBNAME}.test/"
 fi
 
-read -p "Email (${GITEMAIL}) or: " USEREMAIL
+if [[ $SKIP == "false" ]]; then
+  read -p "Email (${GITEMAIL}) or: " USEREMAIL && echo ""
+  read -p "Admin name (${GITNAME}) or: " USERNAME && echo ""
+  read -sp "Password (admin123) or: " USERPASS && echo ""
+fi
+
 if [[ -z "$USEREMAIL" ]]; then USEREMAIL="$GITEMAIL"; fi
-read -p "Admin name (${GITNAME}) or: " USERNAME
 if [[ -z "$USERNAME" ]]; then USERNAME="$GITNAME"; fi
-read -sp "Password (admin123) or: " USERPASS
 if [[ -z "$USERPASS" ]]; then USERPASS="admin123"; fi
-echo ""
 
 # Run isntallation
-mkdir $WPNAME
-cd $WPNAME
+mkdir $NAME
+cd $NAME
 if [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   echo "Setting domain ssl certificate"
   if command -v valet &> /dev/null; then valet secure; fi
@@ -77,7 +85,7 @@ wp core config \
 
 wp core install \
   --url="${URL}" \
-  --title="${WPNAME}" \
+  --title="${NAME}" \
   --admin_user="${USERNAME}" \
   --admin_password="${USERPASS}" \
   --admin_email="${USEREMAIL}" \
@@ -88,41 +96,38 @@ wp option update permalink_structure '/%postname%'
 
 # Check if the installation went well
 if [ ! -d "wp-content" ]; then
-  echo "Something went wrong, no wp-content folder found found"
-  exit;
+  echo "Something went wrong, no wp-content folder found found" && exit;
 fi;
 
 # Add aditonal plugins
-read -p "Also run WP config steps [Y/n] "
-echo ""
-if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-  read -p "Add Duplicate Post? [Y/n] "
-  echo ""
-  if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-    wp plugin install duplicate-post &&
-    wp plugin activate duplicate-post
-  fi;
+if [[ $SKIP == "true" ]]; then
+  for i in "${PLUGINS[@]}"; do
+    wp plugin install $1
+    wp plugin activate $1
+  done;
+  wp plugin install wps-hide-login
+else
+  for i in "${PLUGINS[@]}"; do
+    read -p "Add Duplicate Post? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      wp plugin install $i &&
+      wp plugin activate $i
+    fi
+  done;
 
-  read -p "Add wps-hide-login? [Y/n] "
-  echo ""
+  read -p "Add wps-hide-login? [Y/n] " && echo ""
   if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
     wp plugin install wps-hide-login
-  fi;
+  fi
+fi
 
-  read -p "Add Disable Rest Api? [y/N] "
-  echo ""
-  if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-    wp plugin install disable-json-api &&
-    wp plugin activate disable-json-api
-  fi;
-
-  read -p "Add GraphQL Api? [y/N] "
-  echo ""
-  if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-    cd wp-content/plugins &&
-    git clone git@github.com:wp-graphql/wp-graphql.git &&
-    cd ../.. &&
-    wp plugin activate wp-graphql &&
-    echo "You can test your endpoint via /graphql";
-  fi;
-fi;
+read -p "Also setup GraphQL Api? [y/N] " && echo ""
+if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+  cd wp-content/plugins
+  git clone git@github.com:wp-graphql/wp-graphql.git
+  git clone git@github.com:wp-graphql/wp-graphql-acf.git
+  cd ../..
+  wp plugin activate wp-graphql
+  wp plugin activate wp-graphql-acf
+  echo "You can test your endpoint via /graphql";
+fi
