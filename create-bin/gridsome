@@ -28,21 +28,13 @@ cd $NAME
 
 if [[ $SKIP == "true" ]]; then
   for i in "${PLUGINS[@]}"; do
-    if [[ -f "yarn.lock" ]]; then
-      yarn add $i
-    else
-      npm install $i
-    fi
+    npm install $i
   done;
 else
   for i in "${PLUGINS[@]}"; do
     read -p "Also install $i? [Y/n] " && echo ""
     if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-      if [[ -f "yarn.lock" ]]; then
-        yarn add $i
-      else
-        npm install $i
-      fi
+      npm install $i
     fi
   done;
 fi
