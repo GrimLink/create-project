@@ -2,25 +2,28 @@
 
 RESET='\033[0m'
 BOLD='\033[1m'
-ITALIC='\033[3m'
-GREEN='\033[1;32m'
 
-JIG_NAME="$1"
+NAME="$1"
+TEMPLATE=""
+SKIP="false"
 
-if [[ -z "$JIG_NAME" ]]; then
-  echo -e "${GREEN}Creating Jigsaw project in current folder${RESET}"
-  echo ""
-else
-  echo -e "${GREEN}Creating Jigsaw project in ${JIG_NAME}${RESET}"
-  echo ""
+if [[ -z "$NAME" ]]; then
+  echo "Jigsaw needs a project name" && exit
 fi
 
-echo -e "${BOLD}Options:${RESET}"
-echo "- blog"
-echo "- docs"
-echo -e "- ${ITALIC}Leave blank for none${RESET}"
-read -p "Starter Template: " TEMPLATE
+read -p "Run quick install? [Y/n] "
 echo ""
+if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  SKIP="true"
+fi;
+
+if [[ $SKIP == "false" ]]; then
+  echo -e "${BOLD}Options:${RESET}"
+  echo "- blog"
+  echo "- docs"
+  read -p "Add a starter? (leave blank for default): " TEMPLATE
+  echo ""
+fi
 
 if [[ -z "$TEMPLATE" ]]; then
   INIT="init"
@@ -28,12 +31,8 @@ else
   INIT="init ${TEMPLATE}"
 fi
 
-if [[ -n "$JIG_NAME" ]]; then
-  mkdir $JIG_NAME
-  cd $JIG_NAME
-  composer require tightenco/jigsaw &&
-  ./vendor/bin/jigsaw $INIT
-else
-  composer require tightenco/jigsaw &&
-  ./vendor/bin/jigsaw $INIT
-fi
+mkdir $NAME
+cd $NAME
+composer require tightenco/jigsaw &&
+./vendor/bin/jigsaw $INIT &&
+npm i
