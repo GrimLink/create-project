@@ -22,6 +22,10 @@ echo -e '{
   "include": ["src"]
 }' >> jsconfig.json
 
+# Allow impors from node_modules without ~
+touch .env
+echo -e 'SASS_PATH=node_modules:src' >> .env
+
 # Start
 npm start
 
