@@ -1,37 +1,35 @@
 #!/bin/bash
 
-RESET='\033[0m'
-GREEN='\033[1;32m'
-OCT_NAME="${1}"
+NAME="$1"
+SKIP="false"
 
-if [[ -z "$1" ]]; then
+if [[ -z "$NAME" ]]; then
   echo "The OctoberCMS install requires a name" && exit
 fi
 
-echo -e "${GREEN}Creating OctoberCMS project in ${OCT_NAME}${RESET}"
-echo ""
-
-composer create-project october/october $OCT_NAME && cd $OCT_NAME
-
-if command -v valet &>/dev/null; then
-  read -p "Create DB via Valet? [Yy] " -n 1
-  echo ""
-  if [[ $REPLY =~ ^[Yy]$ ]]; then
-    read -p "DB name: ${OCT_NAME} or " DBNAME
-    echo ""
-    if [[ -z "$DBNAME" ]]; then
-      DBNAME="${OCT_NAME}"
-    fi
-    valet db create $DBNAME
-  else
-    echo "First create a datebase for you October project"
-    read -rsn1 -p "When ready, press any key to continue"
-    echo ""
-  fi
-else
-  echo "First create a datebase for you October project"
-  read -rsn1 -p "When ready, press any key to continue"
-  echo ""
+read -p "Run quick install? [Y/n] " && echo ""
+if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  SKIP="true"
 fi
 
-php artisan october:install && php artisan october:env
+if [[ $SKIP == "false" ]]; then
+  read -p "DB name: ${NAME} or " DBNAME && echo ""
+fi
+if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
+
+composer create-project october/october $NAME &&
+cd $NAME
+
+# Set auto update to false
+# https://octobercms.com/docs/console/commands#console-install-composer
+sed -i '' "s/'disableCoreUpdates' => false,/'disableCoreUpdates' => true,/g" config/cms.php
+
+if command -v valet &> /dev/null; then
+  valet db create $DBNAME
+else
+  echo "First create a datebase for you OctoberCMS project"
+  read -rsn1 -p "When ready, press any key to continue"
+fi
+
+php artisan october:install &&
+php artisan october:env
