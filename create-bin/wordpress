@@ -102,8 +102,8 @@ fi;
 # Add aditonal plugins
 if [[ $SKIP == "true" ]]; then
   for i in "${PLUGINS[@]}"; do
-    wp plugin install $1
-    wp plugin activate $1
+    wp plugin install $i
+    wp plugin activate $i
   done;
   wp plugin install wps-hide-login
 else
