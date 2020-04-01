@@ -1,6 +1,6 @@
 # Changelog
 
-## [2020-03-31]
+## 2020-03-31
 * ADD:
   * quick install option
   * plugin install options
