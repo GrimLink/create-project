@@ -59,7 +59,8 @@ fi
 
 if [[ $SKIP == "false" ]]; then
   read -p "Email (${GITEMAIL}) or: " USEREMAIL && echo ""
-  read -p "Admin name (${GITNAME}) or: " USERNAME && echo ""
+  TOLOWERNAME="$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
+  read -p "Admin name (admin_${TOLOWERNAME}) or: " USERNAME && echo ""
   read -sp "Password (admin123) or: " USERPASS && echo ""
 fi
 
@@ -108,7 +109,7 @@ if [[ $SKIP == "true" ]]; then
   wp plugin install wps-hide-login
 else
   for i in "${PLUGINS[@]}"; do
-    read -p "Add Duplicate Post? [Y/n] " && echo ""
+    read -p "Add $i? [Y/n] " && echo ""
     if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
       wp plugin install $i &&
       wp plugin activate $i
