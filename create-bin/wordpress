@@ -72,7 +72,7 @@ mkdir $NAME
 cd $NAME
 if [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   echo "Setting domain ssl certificate"
-  if command -v valet &> /dev/null; then valet secure; fi
+  if command -v valet &> /dev/null; then valet secure ${NAME}; fi
 fi
 
 wp core download &&
