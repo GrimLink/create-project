@@ -9,6 +9,7 @@ PLUGINS=(
   kadence-blocks
   duplicate-post
   disable-json-api
+  advanced-custom-fields
 );
 
 # Check if dependacy exist
@@ -99,6 +100,18 @@ wp option update permalink_structure '/%postname%'
 if [ ! -d "wp-content" ]; then
   echo "Something went wrong, no wp-content folder found found" && exit;
 fi;
+
+# Delete non-used themes
+wp theme delete twentyseventeen twentynineteen
+
+# Delete non-used plugins
+wp plugin delete akismet
+# Delete non-used plugins with a file direct in de plugins folder
+wp plugin delete hello
+
+# install languages
+wp language core install nl_NL &&
+wp language theme update twentytwenty
 
 # Add aditonal plugins
 if [[ $SKIP == "true" ]]; then
