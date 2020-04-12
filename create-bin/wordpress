@@ -104,6 +104,10 @@ fi;
 # Delete non-used themes
 wp theme delete twentyseventeen twentynineteen
 
+wp scaffold child-theme twentytwenty-child --parent_theme=twentytwenty
+
+cp wp-content/themes/twentytwenty/screenshot.png wp-content/themes/twentytwenty-child
+
 # Delete non-used plugins
 wp plugin delete akismet
 # Delete non-used plugins with a file direct in de plugins folder
