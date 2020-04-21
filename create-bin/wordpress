@@ -104,7 +104,7 @@ fi;
 # Delete non-used themes
 wp theme delete twentyseventeen twentynineteen
 
-wp scaffold child-theme twentytwenty-child --parent_theme=twentytwenty
+wp scaffold child-theme twentytwenty-child --parent_theme=twentytwenty --activate
 
 cp wp-content/themes/twentytwenty/screenshot.png wp-content/themes/twentytwenty-child
 
