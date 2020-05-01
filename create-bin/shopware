@@ -1,0 +1,32 @@
+#!/bin/bash
+
+RESET='\033[0m'
+BOLD='\033[1m'
+
+NAME="$1"
+
+if [[ -z "$NAME" ]]; then
+  echo "Shopware needs a project name" && exit
+fi
+
+git clone git@github.com:shopware/development.git $NAME
+
+cd $NAME
+
+if command -v valet &> /dev/null; then
+  valet db create $DBNAME
+else
+  echo "First create a datebase for you Shopware project"
+  read -rsn1 -p "When ready, press any key to continue"
+fi
+
+composer install
+
+cd public
+
+valet link $NAME
+
+cd ..
+
+bin/setup
+
