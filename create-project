@@ -4,6 +4,7 @@ NAME="$1";
 PROJECT_TYPE="${2}";
 OPTIONS=(
   'magento'
+  'shopware'
   'wordpress'
   'react'
   'gatsby'
@@ -40,6 +41,9 @@ fi
 case "$PROJECT_TYPE" in
   magento|[mM][aA][gG][eE])
     bash $(dirname "${BASH_SOURCE}")/create-bin/magento $@;
+    ;;
+  shopware|[sS][wW])
+    bash $(dirname "${BASH_SOURCE}")/create-bin/shopware $@;
     ;;
   wordpress|[wW][pP])
     bash $(dirname "${BASH_SOURCE}")/create-bin/wordpress $@;
