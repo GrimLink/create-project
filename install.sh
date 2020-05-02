@@ -28,6 +28,7 @@ BINTASKS=(
   'magento'
   'shopware'
   'wordpress'
+  'laravel'
   'react'
   'gatsby'
   'vue'
