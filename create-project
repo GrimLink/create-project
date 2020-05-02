@@ -6,6 +6,7 @@ OPTIONS=(
   'magento'
   'shopware'
   'wordpress'
+  'laravel'
   'react'
   'gatsby'
   'vue'
@@ -47,6 +48,9 @@ case "$PROJECT_TYPE" in
     ;;
   wordpress|[wW][pP])
     bash $(dirname "${BASH_SOURCE}")/create-bin/wordpress $@;
+    ;;
+  laravel|[lL])
+    bash $(dirname "${BASH_SOURCE}")/create-bin/laravel $@;
     ;;
   react)
     bash $(dirname "${BASH_SOURCE}")/create-bin/react $@;
