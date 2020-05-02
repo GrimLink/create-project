@@ -26,6 +26,7 @@ chmod +x $TARGET/create-project
 # Get each task
 BINTASKS=(
   'magento'
+  'shopware'
   'wordpress'
   'react'
   'gatsby'
