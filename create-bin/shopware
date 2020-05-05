@@ -22,11 +22,10 @@ fi
 
 composer install
 
-cd public
-
-valet link $NAME
-
-cd ..
+if command -v valet &> /dev/null; then
+  echo "Valet linking public to this domain"
+  cd public && valet link $NAME && cd ..
+fi
 
 bin/setup
 
