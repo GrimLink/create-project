@@ -20,8 +20,8 @@ if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
 composer create-project october/october $NAME &&
 cd $NAME
 
-# Set auto update to false
 # https://octobercms.com/docs/console/commands#console-install-composer
+echo "Setting auto update to false for composer";
 sed -i '' "s/'disableCoreUpdates' => false,/'disableCoreUpdates' => true,/g" config/cms.php
 
 if command -v valet &> /dev/null; then
