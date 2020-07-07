@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-07-07
+* FIX: Increased Memory limit for Composer install Magento sampledata
+
 ## 2020-05-27
 * ADD: msp devtools to mage script
 
