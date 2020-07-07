@@ -1,5 +1,8 @@
 # Changelog
 
+## 2020-05-27
+* ADD: msp devtools to mage script
+
 ## 2020-03-31
 * ADD:
   * quick install option

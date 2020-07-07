@@ -13,6 +13,7 @@ PLUGINS=(
 
 DEVPLUGINS=(
   mage2tv/magento-cache-clean
+  msp/devtools
 );
 
 if [[ -z "$NAME" ]]; then
@@ -180,6 +181,7 @@ bin/magento setup:install \
 
 if [[ $SKIP == "true" ]]; then
   bin/magento deploy:mode:set developer
+  bin/magento cache:disable full_page
   bin/magento config:set admin/security/session_lifetime 86400
   bin/magento config:set admin/security/password_lifetime ""
 else
@@ -189,6 +191,7 @@ else
     bin/magento deploy:mode:set production
   else
     bin/magento deploy:mode:set developer
+    bin/magento cache:disable full_page
     bin/magento config:set admin/security/session_lifetime 86400
     bin/magento config:set admin/security/password_lifetime ""
   fi
