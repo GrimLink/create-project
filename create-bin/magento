@@ -99,7 +99,7 @@ cd $NAME
 if command -v valet &> /dev/null; then
   if [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
     echo "Setting domain ssl certificate"
-    valet secure
+    valet secure $NAME
   fi
 fi
 
