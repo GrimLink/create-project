@@ -15,7 +15,7 @@ From a simple Vue project to a complex Magento 2 project.
 Run the `install.sh` script via curl.
 
 ```bash
-bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/master/install.sh)"
+bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/main/install.sh)"
 ```
 
 This will download and copy the files to your target folder.

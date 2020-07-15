@@ -16,7 +16,7 @@ OPTIONS=(
 );
 
 if [[ $NAME == "update" ]]; then
-  bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/master/install.sh)" && exit;
+  bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/main/install.sh)" && exit;
 fi
 
 # Check if parent folder is one of the options

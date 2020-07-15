@@ -19,7 +19,7 @@ if [ ! -d $TARGET/create-bin ]; then mkdir $TARGET/create-bin; fi
 mkdir $TARGET/create-project-temp && cd $TARGET/create-project-temp
 
 # Get task runner
-curl -sS -O "https://raw.githubusercontent.com/GrimLink/create-project/master/create-project" &&
+curl -sS -O "https://raw.githubusercontent.com/GrimLink/create-project/main/create-project" &&
 cp create-project $TARGET/create-project &&
 chmod +x $TARGET/create-project
 
@@ -39,7 +39,7 @@ BINTASKS=(
 
 echo -e "Getting the tasks.."
 for i in "${BINTASKS[@]}"; do
-  curl -sS -O "https://raw.githubusercontent.com/GrimLink/create-project/master/create-bin/${i}" &&
+  curl -sS -O "https://raw.githubusercontent.com/GrimLink/create-project/main/create-bin/${i}" &&
   cp $i $TARGET/create-bin/$i
   echo -e "[${GREEN}✓${RESET}] ${i}"
 done
@@ -51,4 +51,4 @@ rm -r $TARGET/create-project-temp
 echo ""
 echo -e "${GREEN}Done${RESET} 🎉"
 echo "For info on how to use create-project"
-echo "Read it here → https://github.com/GrimLink/create-project/blob/master/README.md"
+echo "Read it here → https://github.com/GrimLink/create-project/blob/main/README.md"
