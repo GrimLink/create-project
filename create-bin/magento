@@ -109,11 +109,8 @@ composer config minimum-stability dev
 composer config prefer-stable true
 
 echo "Setting up local composer folder"
-read -p "Vendor name (Leave blank to skip this step): " COMPSERVENDOR && echo ""
-if [[ -n "$COMPSERVENDOR" ]]; then 
-  mkdir -p package-source/$COMPSERVENDOR
-  composer config repositories.local-packages path package-source/$COMPSERVENDOR/\*
-fi
+mkdir -p package-source
+composer config repositories.local-packages path package-source/*/*
 
 if [[ $SKIP == "true" ]]; then
   echo "Copying composer authentication"
