@@ -27,14 +27,20 @@ echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
   echo "Using magento 2.4";
-  MVERSION="=2.4"
+  MVERSION="2.4.*"
 elif [[ "$VERSION" == "2.3" ]]; then
-  echo "Using magento 2.3.5"
-  MVERSION="=2.3"
+  echo "Using magento 2.3 latest"
+  MVERSION="2.3.*"
 else
   echo "Using magento $VERSION"
-  MVERSION="=$VERSION"
+  MVERSION="$VERSION"
 fi
+
+if [[ -n "$MVERSION" ]]; then
+  MVERSION_BASE="${MVERSION:0:3}"
+fi
+
+read -p "Install sample data? [y/N]: " SAMPLEDATA && echo ""
 
 read -p "Run quick install? [Y/n] " && echo ""
 if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
@@ -95,7 +101,7 @@ composer create-project \
   --no-install \
   --stability dev \
   --prefer-source \
-  --repository-url=https://repo.magento.com/ magento/project-community-edition$MVERSION $NAME &&
+  --repository-url=https://repo.magento.com/ magento/project-community-edition=$MVERSION $NAME &&
 cd $NAME
 
 if command -v valet &> /dev/null; then
@@ -156,19 +162,6 @@ else
   done;
 fi
 
-read -p "Install sample data? [y/N] "
-echo ""
-if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-  if [[ ! -d "$HOME/.magento-sampledata/$MVERSION" ]]; then
-    # TODO: add clone option for customn version input
-    echo -e "Cloning $MVERSION sample data"
-    git clone -b $MVERSION git@github.com:magento/magento2-sample-data.git .magento-sampledata/$MVERSION
-  fi
-
-  echo -e "Installing $MVERSION sample data"
-  php -f $HOME/magento-sampledata/$MVERSION/dev/tools/build-sample-data.php -- --ce-source="$PWD/$NAME"
-fi
-
 # Run installation
 echo "Running instalation.. Enjoy a cup of coffee in the meantime"
 composer install
@@ -208,4 +201,14 @@ else
   fi
 fi
 
-bin/magento s:up
+if [[ $SAMPLEDATA =~ ^[yY]|[yY][eE][sS]$ ]]; then
+  if [[ ! -d "$HOME/.magento-sampledata/$MVERSION_BASE" ]]; then
+    git clone -b $MVERSION_BASE git@github.com:magento/magento2-sample-data.git $HOME/.magento-sampledata/$MVERSION_BASE
+  fi
+
+  echo -e "Installing $MVERSION_BASE sample data"
+  # This will also run bin/magento s:up
+  php -f $HOME/.magento-sampledata/$MVERSION_BASE/dev/tools/build-sample-data.php -- --ce-source="$PWD"
+else
+  bin/magento s:up
+fi
