@@ -22,15 +22,15 @@ fi
 
 echo "What Magento version do want to install?"
 echo "  - empty = 2.4 latest"
-echo "  - 2.3 Latest"
+echo "  - 2.3 = 2.3 latest"
 echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
   echo "Using magento 2.4";
-  MVERSION="=2.4.*"
+  MVERSION="=2.4"
 elif [[ "$VERSION" == "2.3" ]]; then
-  echo "Using magento 2.3"
-  MVERSION="=2.3.*"
+  echo "Using magento 2.3.5"
+  MVERSION="=2.3"
 else
   echo "Using magento $VERSION"
   MVERSION="=$VERSION"
@@ -156,6 +156,19 @@ else
   done;
 fi
 
+read -p "Install sample data? [y/N] "
+echo ""
+if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+  if [[ ! -d "$HOME/.magento-sampledata/$MVERSION" ]]; then
+    # TODO: add clone option for customn version input
+    echo -e "Cloning $MVERSION sample data"
+    git clone -b $MVERSION git@github.com:magento/magento2-sample-data.git .magento-sampledata/$MVERSION
+  fi
+
+  echo -e "Installing $MVERSION sample data"
+  php -f $HOME/magento-sampledata/$MVERSION/dev/tools/build-sample-data.php -- --ce-source="$PWD/$NAME"
+fi
+
 # Run installation
 echo "Running instalation.. Enjoy a cup of coffee in the meantime"
 composer install
@@ -196,9 +209,3 @@ else
 fi
 
 bin/magento s:up
-
-read -p "Also install sample data? [y/N] "
-echo ""
-if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
-  bin/magento sampledata:deploy;
-fi
