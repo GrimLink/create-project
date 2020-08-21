@@ -21,17 +21,18 @@ if [[ -z "$NAME" ]]; then
 fi
 
 echo "What Magento version do want to install?"
-echo "  - empty = Latest stable"
-echo "  - dev = Latest dev"
+echo "  - empty = 2.4 latest"
+echo "  - 2.3 Latest"
 echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
-  echo "Using latest stable version";
+  echo "Using magento 2.4";
+  MVERSION="=2.4.*"
+elif [[ "$VERSION" == "2.3" ]]; then
+  echo "Using magento 2.3"
   MVERSION="=2.3.*"
-elif [[ "$VERSION" == "dev" ]]; then
-  echo "Using latest version"
 else
-  echo "Using version $VERSION"
+  echo "Using magento $VERSION"
   MVERSION="=$VERSION"
 fi
 
