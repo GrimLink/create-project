@@ -77,6 +77,10 @@ if [[ -z "$URL" ]]; then
   URL="http://${DBNAME}.${DOMAIN}/"
 elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   URL="https://${DBNAME}.${DOMAIN}/"
+  if command -v valet &> /dev/null; then
+    echo "Setting domain ssl certificate"
+    valet secure $NAME
+  fi
 fi
 
 if [[ $SKIP == "false" ]]; then
@@ -103,13 +107,6 @@ composer create-project \
   --prefer-source \
   --repository-url=https://repo.magento.com/ magento/project-community-edition=$MVERSION $NAME &&
 cd $NAME
-
-if command -v valet &> /dev/null; then
-  if [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
-    echo "Setting domain ssl certificate"
-    valet secure $NAME
-  fi
-fi
 
 echo "Adjusting composer settings to allow dev packages"
 composer config minimum-stability dev

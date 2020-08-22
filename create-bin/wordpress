@@ -58,6 +58,10 @@ if [[ -z "$URL" ]]; then
   URL="http://${DBNAME}.${DOMAIN}/"
 elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   URL="https://${DBNAME}.${DOMAIN}/"
+  if command -v valet &> /dev/null; then
+    echo "Setting domain ssl certificate"
+    valet secure $NAME
+  fi
 fi
 
 if [[ $SKIP == "false" ]]; then
@@ -73,13 +77,6 @@ if [[ -z "$USERPASS" ]]; then USERPASS="admin123"; fi
 # Run installation
 mkdir $NAME
 cd $NAME
-
-if command -v valet &> /dev/null; then
-  if [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
-    echo "Setting domain ssl certificate"
-    valet secure
-  fi
-fi
 
 wp core download &&
 wp core config \

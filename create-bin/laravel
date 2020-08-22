@@ -38,6 +38,10 @@ if [[ -z "$URL" ]]; then
   URL="http://${DBNAME}.${DOMAIN}/"
 elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
   URL="https://${DBNAME}.${DOMAIN}/"
+  if command -v valet &> /dev/null; then
+    echo "Setting domain ssl certificate"
+    valet secure $NAME
+  fi
 fi
 
 # Run installation

@@ -5,6 +5,7 @@
   * Sample data installation via git and symlinking, to speed up the setup
   * Version picker now uses forced version selection.
     And 2 easy picks for the latest minor versions (2.3 and 2.4)
+* FIX: valet secure if statement
 
 ## 2020-07-07
 * FIX: Increased Memory limit for Composer install Magento sampledata
