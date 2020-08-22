@@ -1,9 +1,10 @@
 # Create Project
 
-Create project is a bash script
-that runs the setup steps needed for each project type.
+Create project is a script.
+That runs the steps needed for seting up project with additional config settings.
+Which normally need to be done manually.
 
-From a simple Vue project to a complex Magento 2 project.
+The project type can vary from a simple Vue project to a complex Magento2 project.
 
 - [Installation](#installation)
 - [How to use](#how-to-use)
@@ -28,23 +29,26 @@ Run create-project via:
 create-project <NAME> [<PROJECT_TYPE>]
 ```
 
-Create-project will always ask for the name.
-As this value is required.
+Create-project will always ask for the name of your project.
+As this value is required for the setup.
 
 The project type is optional.
-If left blank create-project will ask for this.
-Except if your in a folder with the same name as the project type.
+If left blank create-project script will ask for this value.
 
-Each task will ask for questions before hand.
-And only after that run the installer.
+Except if the value is your current folder name.
+This means that if your folder is `magento`.
+It will assume that you want to install a Magento2 instalation.
 
-So you can get a coffee ☕️
+Each config value will be asked before hand.
+And only after that the installation tep are run.
+
+So you can get a coffee ☕️ while it installs the project.
 
 ## Update
 
 Simply run `create-project update` and follow the steps.
 
-_Same as installer._
+_Same as installation steps._
 
 ## Requirements
 
@@ -52,7 +56,7 @@ Create project assumes you have a `.gitconfig` file.
 With the username and email.
 
 Create project needs the following tools installed on your machine.
-To run certian tasks.
+To run certain tasks.
 
 - node
 - php
