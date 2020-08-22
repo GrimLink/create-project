@@ -7,15 +7,6 @@ DOMAIN="test"
 ADMINNAME="admin_$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
 SKIP="false"
 
-PLUGINS=(
-  community-engineering/language-nl_nl
-);
-
-DEVPLUGINS=(
-  mage2tv/magento-cache-clean
-  msp/devtools
-);
-
 if [[ -z "$NAME" ]]; then
   echo "The Magento install requires a name!" && exit
 fi
@@ -27,10 +18,10 @@ echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
   echo "Using magento 2.4";
-  MVERSION="2.4.*"
+  MVERSION="2.4.0"
 elif [[ "$VERSION" == "2.3" ]]; then
   echo "Using magento 2.3 latest"
-  MVERSION="2.3.*"
+  MVERSION="2.3.5-p2"
 else
   echo "Using magento $VERSION"
   MVERSION="$VERSION"
@@ -40,6 +31,19 @@ if [[ -n "$MVERSION" ]]; then
   MVERSION_BASE="${MVERSION:0:3}"
 fi
 
+if [[ -n "$MVERSION" ]]; then
+  MVERSION_YIREO="${MVERSION:2:3}.*"
+fi
+
+PLUGINS=(
+  community-engineering/language-nl_nl
+  yireo/magento2-replace-bundled:$MVERSION_YIREO
+);
+
+DEVPLUGINS=(
+  mage2tv/magento-cache-clean
+  msp/devtools
+);
 
 SETCONFIG=(
   "config:set admin/security/session_lifetime 86400"
@@ -51,6 +55,7 @@ SETCONFIG=(
   "cache:disable full_page"
   "cache:flush"
 );
+
 read -p "Install sample data? [y/N]: " SAMPLEDATA && echo ""
 
 read -p "Run quick install? [Y/n] " && echo ""
@@ -218,6 +223,7 @@ if [[ $SAMPLEDATA =~ ^[yY]|[yY][eE][sS]$ ]]; then
   mkdir -p pub/media/catalog/product
   mkdir -p pub/media/downloadable/files
   mkdir -p pub/media/wysiwyg
+  touch README.md
   # This will also run bin/magento s:up
   php -f $HOME/.magento-sampledata/$MVERSION_BASE/dev/tools/build-sample-data.php -- --ce-source="$PWD"
 else

@@ -1,12 +1,14 @@
 # Changelog
 
 ## 2020-08-22
-* ADD: Redis setup
+* ADD:
+  * Magento Redis setup
+  * Magento module yireo/magento2-replace-bundled
 * IMP:
-  * Sample data installation via git and symlinking, to speed up the setup
-  * Version picker now uses forced version selection.
-    And 2 easy picks for the latest minor versions (2.3 and 2.4)
-* FIX: valet secure if statement
+  * Magento Sample data installation via git and symlinking, to speed up the setup
+  * Magento Version picker now uses forced version selection.
+    And 2 easy picks for the latest versions of 2.3 and 2.4
+* FIX: valet secure if statement for Magento, Wordpress and Laravel
 
 ## 2020-07-07
 * FIX: Increased Memory limit for Composer install Magento sampledata
