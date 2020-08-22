@@ -40,6 +40,17 @@ if [[ -n "$MVERSION" ]]; then
   MVERSION_BASE="${MVERSION:0:3}"
 fi
 
+
+SETCONFIG=(
+  "config:set admin/security/session_lifetime 86400"
+  "config:set admin/security/password_lifetime ''"
+  "config:set msp_devtools/general/enabled 1"
+  "setup:config:set --cache-backend=redis --cache-backend-redis-server=127.0.0.1 --cache-backend-redis-db=0 -n"
+  "setup:config:set --page-cache=redis --page-cache-redis-server=127.0.0.1 --page-cache-redis-db=1 -n"
+  "deploy:mode:set developer"
+  "cache:disable full_page"
+  "cache:flush"
+);
 read -p "Install sample data? [y/N]: " SAMPLEDATA && echo ""
 
 read -p "Run quick install? [Y/n] " && echo ""
@@ -181,20 +192,18 @@ bin/magento setup:install \
   --backend-frontname="${BACKURL}"
 
 if [[ $SKIP == "true" ]]; then
-  bin/magento deploy:mode:set developer
-  bin/magento cache:disable full_page
-  bin/magento config:set admin/security/session_lifetime 86400
-  bin/magento config:set admin/security/password_lifetime ""
+  for i in "${SETCONFIG[@]}"; do
+    bin/magento $i
+  done;
 else
   read -p "Set mode to developer? [Y/n] "
   echo ""
   if [[ $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
     bin/magento deploy:mode:set production
   else
-    bin/magento deploy:mode:set developer
-    bin/magento cache:disable full_page
-    bin/magento config:set admin/security/session_lifetime 86400
-    bin/magento config:set admin/security/password_lifetime ""
+    for i in "${SETCONFIG[@]}"; do
+      bin/magento $i
+    done;
   fi
 fi
 

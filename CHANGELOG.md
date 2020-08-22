@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2020-08-22
+* ADD: Redis setup
 * IMP:
   * Sample data installation via git and symlinking, to speed up the setup
   * Version picker now uses forced version selection.
