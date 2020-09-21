@@ -177,7 +177,7 @@ fi
 
 # Run installation
 echo "Running instalation.. Enjoy a cup of coffee in the meantime"
-composer install
+COMPOSER_MEMORY_LIMIT=-1 composer install
 
 bin/magento setup:install \
   --base-url="${URL}" \
