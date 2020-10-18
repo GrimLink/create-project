@@ -6,6 +6,7 @@ NAME="$1"
 DOMAIN="test"
 ADMINNAME="admin_$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
 SKIP="false"
+SECURE="true"
 
 if [[ -z "$NAME" ]]; then
   echo "The Magento install requires a name!" && exit
@@ -27,17 +28,8 @@ else
   MVERSION="$VERSION"
 fi
 
-if [[ -n "$MVERSION" ]]; then
-  MVERSION_BASE="${MVERSION:0:3}"
-fi
-
-if [[ -n "$MVERSION" ]]; then
-  MVERSION_YIREO="${MVERSION:2:3}.*"
-fi
-
 PLUGINS=(
   community-engineering/language-nl_nl
-  yireo/magento2-replace-bundled:$MVERSION_YIREO
 );
 
 DEVPLUGINS=(
@@ -52,7 +44,7 @@ SETCONFIG=(
   "setup:config:set --cache-backend=redis --cache-backend-redis-server=127.0.0.1 --cache-backend-redis-db=0 -n"
   "setup:config:set --page-cache=redis --page-cache-redis-server=127.0.0.1 --page-cache-redis-db=1 -n"
   "deploy:mode:set developer"
-  "cache:disable full_page"
+  "cache:disable full_page block_html layout"
   "cache:flush"
 );
 
@@ -84,19 +76,24 @@ else
   read -rsn1 -p "When ready, press any key to continue"
 fi
 
-echo "Set URL"
-echo " - empty = http://${DBNAME}.${DOMAIN}/"
-echo " - s or secure = https://${DBNAME}.${DOMAIN}/"
-echo " - Or use your own"
-read URL
-if [[ -z "$URL" ]]; then
-  URL="http://${DBNAME}.${DOMAIN}/"
-elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
+if [[ $SKIP == "false" ]]; then
+  if [[ $SECURE == "true" ]]; then
+    read -p "Use secure url? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then SECURE="false" fi;
+  else
+    read -p "Use secure url? [y/N] " && echo ""
+    if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then SECURE="true" fi;
+  fi
+fi
+
+if [[ $SECURE == "true" ]]; then
   URL="https://${DBNAME}.${DOMAIN}/"
   if command -v valet &> /dev/null; then
     echo "Setting domain ssl certificate"
     valet secure $NAME
   fi
+else
+  URL="http://${DBNAME}.${DOMAIN}/"
 fi
 
 if [[ $SKIP == "false" ]]; then
@@ -212,20 +209,4 @@ else
   fi
 fi
 
-if [[ $SAMPLEDATA =~ ^[yY]|[yY][eE][sS]$ ]]; then
-  if [[ ! -d "$HOME/.magento-sampledata/$MVERSION_BASE" ]]; then
-    git clone -b $MVERSION_BASE git@github.com:magento/magento2-sample-data.git $HOME/.magento-sampledata/$MVERSION_BASE
-  fi
-
-  echo -e "Installing $MVERSION_BASE sample data"
-  # Lets make sure these folder exist, to prevent them being made as a symlink
-  mkdir -p app/code/Magento
-  mkdir -p pub/media/catalog/product
-  mkdir -p pub/media/downloadable/files
-  mkdir -p pub/media/wysiwyg
-  touch README.md
-  # This will also run bin/magento s:up
-  php -f $HOME/.magento-sampledata/$MVERSION_BASE/dev/tools/build-sample-data.php -- --ce-source="$PWD"
-else
-  bin/magento s:up
-fi
+bin/magento s:up
