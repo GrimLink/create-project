@@ -48,8 +48,6 @@ SETCONFIG=(
   "cache:flush"
 );
 
-read -p "Install sample data? [y/N]: " SAMPLEDATA && echo ""
-
 read -p "Run quick install? [Y/n] " && echo ""
 if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
   SKIP="true"
