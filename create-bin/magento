@@ -19,10 +19,10 @@ echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
   echo "Using magento 2.4";
-  MVERSION="2.4.0"
+  MVERSION="^2.4"
 elif [[ "$VERSION" == "2.3" ]]; then
   echo "Using magento 2.3 latest"
-  MVERSION="2.3.5-p2"
+  MVERSION="^2.3"
 else
   echo "Using magento $VERSION"
   MVERSION="$VERSION"
@@ -77,10 +77,10 @@ fi
 if [[ $SKIP == "false" ]]; then
   if [[ $SECURE == "true" ]]; then
     read -p "Use secure url? [Y/n] " && echo ""
-    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then SECURE="false" fi;
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then SECURE="false"; fi;
   else
     read -p "Use secure url? [y/N] " && echo ""
-    if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then SECURE="true" fi;
+    if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then SECURE="true"; fi;
   fi
 fi
 
