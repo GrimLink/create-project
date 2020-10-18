@@ -30,6 +30,7 @@ fi
 
 PLUGINS=(
   community-engineering/language-nl_nl
+  siteation/magento2-module-account-menu
 );
 
 DEVPLUGINS=(
