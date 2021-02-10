@@ -30,18 +30,13 @@ fi
 
 PLUGINS=(
   community-engineering/language-nl_nl
-  siteation/magento2-module-account-menu
 );
 
-DEVPLUGINS=(
-  mage2tv/magento-cache-clean
-  msp/devtools
-);
+DEVPLUGINS=();
 
 SETCONFIG=(
   "config:set admin/security/session_lifetime 86400"
   "config:set admin/security/password_lifetime ''"
-  "config:set msp_devtools/general/enabled 1"
   "setup:config:set --cache-backend=redis --cache-backend-redis-server=127.0.0.1 --cache-backend-redis-db=0 -n"
   "setup:config:set --page-cache=redis --page-cache-redis-server=127.0.0.1 --page-cache-redis-db=1 -n"
   "deploy:mode:set developer"
