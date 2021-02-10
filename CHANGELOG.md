@@ -1,5 +1,21 @@
 # Changelog
 
+## 2021-02-10
+* IMP: magento 2.4 version
+* DEL: magento 2 plugins
+
+## 2020-10-18
+* ADD:
+  * siteation account module
+  * indexer and disable csp module
+* IMP: Magento versions
+* DEL:
+  * sample and replace options
+  * sample question
+* FIX:
+  * memory issue in 2.4 install
+  * error van update versions
+
 ## 2020-08-22
 * ADD:
   * Magento Redis setup
