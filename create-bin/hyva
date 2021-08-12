@@ -5,63 +5,73 @@
 
 HYVA_MODE="dev"
 
-# TODO: add instalation via a license for a production setup
-# Prod/License install (requires key)
-# echo "Welcome to the Hyva setup"
-# echo "This script will install Hyva via "
-# read -p "Is this? [y/N] "
-# echo ""
-# if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then    
-#     # this command adds your key to your projects auth.json file
-#     # replace yourLicenseAuthentificationKey with your own key
-#     composer config --auth http-basic.hyva-themes.repo.packagist.com token yourLicenseAuthentificationKey
-#     # replace yourProjectName with your project name
-#     composer config repositories.private-packagist composer https://hyva-themes.repo.packagist.com/yourProjectName/
+echo "Welcome to the Hyva setup"
+echo "This script will install Hyva Theme for Magento 2 "
 
-#     composer require hyva-themes/magento2-theme-module --no-update
-#     composer require hyva-themes/magento2-reset-theme --no-update
-#     composer require hyva-themes/magento2-graphql-tokens --no-update
-#     composer require hyva-themes/magento2-email-module --no-update
-#     composer require hyva-themes/magento2-default-theme --no-update
+read -p "Is this a production or a development setup [dev/prod] " HYVA_MODE &&
+echo ""
+if [[ HYVA_MODE == "dev" ]]; then
+    echo "This requires that you have access to the Hyva Gitlab repository"
+    read -p "Do you have access? [y/N] "
+    echo ""
+    if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
+        # Hosted on private gitlab:
+        composer config \
+            repositories.hyva-themes/magento2-theme-module \
+            git git@gitlab.hyva.io:hyva-themes/magento2-theme-module.git
+        composer config \
+            repositories.hyva-themes/magento2-reset-theme \
+            git git@gitlab.hyva.io:hyva-themes/magento2-reset-theme.git
+        composer config \
+            repositories.hyva-themes/magento2-email-module \
+            git git@gitlab.hyva.io:hyva-themes/magento2-email-module.git
+        composer config \
+            repositories.hyva-themes/magento2-default-theme \
+            git git@gitlab.hyva.io:hyva-themes/magento2-default-theme.git
+        composer config \
+            repositories.hyva-themes/magento2-page-builder \
+            git git@gitlab.hyva.io:hyva-themes/magento2-page-builder.git
 
-#     # if use Magento PageBuilder with Magento 2.4.2 or later, also install
-#     composer require hyva-themes/magento2-page-builder --no-update
+        # Hosted on public github:
+        composer config \
+            repositories.hyva-themes/magento2-graphql-tokens \
+            git git@github.com:hyva-themes/magento2-graphql-tokens.git
 
-#     composer update
-# fi;
+        composer require \
+            hyva-themes/magento2-theme-module \
+            hyva-themes/magento2-reset-theme \
+            hyva-themes/magento2-graphql-tokens \
+            hyva-themes/magento2-email-module \
+            hyva-themes/magento2-page-builder \
+            --prefer-source --no-update
+        composer require hyva-themes/magento2-default-theme --prefer-source
 
-# Dev/Gitlab install (requires ssh access)
+        bin/magento config:set customer/captcha/enable 0
+        bin/magento setup:upgrade
+    fi;
+fi
 
-# Hosted on private gitlab:
-composer config \
-    repositories.hyva-themes/magento2-theme-module \
-    git git@gitlab.hyva.io:hyva-themes/magento2-theme-module.git
-composer config \
-    repositories.hyva-themes/magento2-reset-theme \
-    git git@gitlab.hyva.io:hyva-themes/magento2-reset-theme.git
-composer config \
-    repositories.hyva-themes/magento2-email-module \
-    git git@gitlab.hyva.io:hyva-themes/magento2-email-module.git
-composer config \
-    repositories.hyva-themes/magento2-default-theme \
-    git git@gitlab.hyva.io:hyva-themes/magento2-default-theme.git
-composer config \
-    repositories.hyva-themes/magento2-page-builder \
-    git git@gitlab.hyva.io:hyva-themes/magento2-page-builder.git
+if [[ HYVA_MODE == "prod" ]]; then
+    echo "This requires that you have access to the Hyva License key"
+    read -p "Key: " HYVA_LICENCE_KEY && echo ""
+    if [[ -n "$HYVA_LICENCE_KEY" ]]; then
+        composer config \
+            --auth http-basic.hyva-themes.repo.packagist.com \
+            token $HYVA_LICENCE_KEY
 
-# Hosted on public github:
-composer config \
-    repositories.hyva-themes/magento2-graphql-tokens \
-    git git@github.com:hyva-themes/magento2-graphql-tokens.git
-
-composer require \
-    hyva-themes/magento2-theme-module \
-    hyva-themes/magento2-reset-theme \
-    hyva-themes/magento2-graphql-tokens \
-    hyva-themes/magento2-email-module \
-    hyva-themes/magento2-page-builder \
-    --prefer-source --no-update
-composer require hyva-themes/magento2-default-theme --prefer-source
-
-bin/magento config:set customer/captcha/enable 0
-bin/magento setup:upgrade
+        echo "Please eneter the private Packagist key"
+        read -p "Key: " HYVA_PACKAGIST_KEY && echo ""
+        if [[ -n "$HYVA_PACKAGIST_KEY" ]]; then
+            composer config \
+                repositories.private-packagist \
+                composer https://hyva-themes.repo.packagist.com/${HYVA_URL}/
+                
+            composer require hyva-themes/magento2-theme-module --no-update
+            composer require hyva-themes/magento2-reset-theme --no-update
+            composer require hyva-themes/magento2-graphql-tokens --no-update
+            composer require hyva-themes/magento2-email-module --no-update
+            composer require hyva-themes/magento2-page-builder --no-update
+            composer require hyva-themes/magento2-default-theme
+        fi;
+    fi;
+fi
