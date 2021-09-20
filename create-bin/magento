@@ -20,7 +20,7 @@ echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
   echo "Using magento 2.4";
-  MVERSION="2.4.2"
+  MVERSION="2.4.3"
 elif [[ "$VERSION" == "2.3" ]]; then
   echo "Using magento 2.3 latest"
   MVERSION="2.3.6"
