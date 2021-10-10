@@ -3,14 +3,17 @@
 # Note this script requires that you have an existing Magento 2.4 is created
 # For the Hyva docs see https://docs.hyva.io/
 
-HYVA_MODE="dev"
+HYVA_DEFAULT_MODE="dev"
 
 echo "Welcome to the Hyva setup"
 echo "This script will install Hyva Theme for Magento 2 "
 
 read -p "Is this a production or a development setup [dev/prod] " HYVA_MODE &&
 echo ""
-if [[ HYVA_MODE == "dev" ]]; then
+
+if [[ -z "$HYVA_MODE" ]]; then $HYVA_MODE="$HYVA_DEFAULT_MODE"; fi
+
+if [[ $HYVA_MODE == "dev" ]]; then
     echo "This requires that you have access to the Hyva Gitlab repository"
     read -p "Do you have access? [y/N] "
     echo ""
@@ -51,7 +54,7 @@ if [[ HYVA_MODE == "dev" ]]; then
     fi;
 fi
 
-if [[ HYVA_MODE == "prod" ]]; then
+if [[ $HYVA_MODE == "prod" ]]; then
     echo "This requires that you have access to the Hyva License key"
     read -p "Key: " HYVA_LICENCE_KEY && echo ""
     if [[ -n "$HYVA_LICENCE_KEY" ]]; then
