@@ -183,6 +183,14 @@ fi;
 echo "Running instalation.. Enjoy a cup of coffee in the meantime"
 COMPOSER_MEMORY_LIMIT=-1 composer install
 
+# Safety check for mariaDB with installation
+MARIADB_VERSION=$(mariadb -V);
+if [[ $MARIADB_VERSION =~ "10.5.4" ]] || [[ $$MARIADB_VERSION =~ "10.6.4" ]]; then
+  echo "Before continuing, make sure you the right mariadb version set in your etc/di.xml"
+  read -rsn1 -p "When ready, press any key to continue";
+  echo "";
+fi
+
 bin/magento setup:install \
   --base-url="${URL}" \
   --db-host="${DBHOST}" \
