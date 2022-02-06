@@ -7,7 +7,6 @@ DOMAIN="test"
 ADMINNAME="admin_$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
 SKIP="false"
 SECURE="true"
-HYVA="false"
 
 if [[ -z "$NAME" ]]; then
   echo "The Magento install requires a name!" && exit
@@ -106,8 +105,6 @@ if [[ $SKIP == "false" ]]; then
   read -p "BackendURL (admin) or: " BACKURL && echo ""
 fi
 
-read -p "Also install Hyva? [y/N] " HYVA && echo ""
-
 if [[ -z "$USEREMAIL" ]]; then USEREMAIL="$GITEMAIL"; fi
 if [[ -z "$USERFIRST" ]]; then USERFIRST="$GITNAME"; fi
 if [[ -z "$USERLAST" ]]; then USERLAST="admin"; fi
@@ -174,10 +171,6 @@ else
     fi
   done;
 fi
-
-if [[ $HYVA =~ ^[yY]|[yY][eE][sS]$ ]]; then
-  bash $(dirname "${BASH_SOURCE}")/create-bin/hyva;
-fi;
 
 # Run installation
 echo "Running instalation.. Enjoy a cup of coffee in the meantime"
