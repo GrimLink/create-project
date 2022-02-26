@@ -15,17 +15,17 @@ BOLD='\033[1m'
 NAME="$1"
 SWVERSION="6.4"
 
-PLUGINS=();
-
-DEVPLUGINS=(
+PLUGINS=(
   frosh/development-helper
   yireo/shopware6-additional-user-commands
+  yireo/shopware6-additional-config-commands
   yireo/shopware6-command-system-info
 );
 
 SWPLUGINS_ACTIVATE=(
   FroshDevelopmentHelper
   YireoAdditionalUserCommands
+  YireoAdditionalConfigCommands
   YireoCommandSystemInfo
 );
 
@@ -34,10 +34,10 @@ echo "  - empty = 6.4 latest"
 echo "  Or use your own shopware version"
 read -p "Version: " VERSION
 if [[ -n "$VERSION" ]]; then
-  echo "Using magento $VERSION"
+  echo "Using shopware $VERSION"
   SWVERSION="$VERSION"
 else
-  echo "Using magento $SWVERSION"
+  echo "Using shopware $SWVERSION"
 fi
 
 if [[ -z "$NAME" ]]; then
@@ -49,28 +49,18 @@ if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
   SKIP="true"
 fi
 
-composer create-project shopware/production:$SWVERSION $NAME
-
+# composer create-project shopware/production:$SWVERSION $NAME
+git clone -b 6.4 https://github.com/shopware/production $NAME
 cd $NAME
 
 if command -v valet &> /dev/null; then
   echo "creating new database"
   valet db create $NAME
-else
-  echo "First create a datebase for you Magento project"
-  read -rsn1 -p "When ready, press any key to continue"
-fi
-
-if command -v valet &> /dev/null; then
   valet secure
 else
   echo "First create a datebase for you Shopware project"
   read -rsn1 -p "When ready, press any key to continue"
 fi
-
-# Add composer repositories.shopware-packages
-# Also needs token to work
-composer config repositories.shopware-packages '{"type": "composer", "url": "https://packages.shopware.com"}'
 
 echo "Adjusting composer settings to allow dev packages"
 composer config minimum-stability dev
@@ -94,19 +84,6 @@ else
   done;
 fi
 
-if [[ $SKIP == "true" ]]; then
-  for i in "${DEVPLUGINS[@]}"; do
-    composer require --dev --no-update $i
-  done;
-else
-  for i in "${DEVPLUGINS[@]}"; do
-    read -p "Also install $i? [Y/n] " && echo ""
-    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-      composer require --dev --no-update $i
-    fi
-  done;
-fi
-
 composer install
 
 touch .shopware-valet
@@ -122,6 +99,7 @@ bin/console system:setup -n \
 bin/console system:install --basic-setup
 
 if [[ $SKIP == "true" ]]; then
+  echo ""
 else
   # TODO check why you need this?
   read -p "Also run build admin and Store ? [Y/n] "
@@ -129,7 +107,7 @@ else
   if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
     bin/build-administration.sh
     bin/build-storefront.sh
-fi;
+  fi;
 fi
 
 HTACCESS=.htaccess
