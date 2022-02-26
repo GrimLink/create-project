@@ -26,6 +26,7 @@ DEVPLUGINS=(
 SWPLUGINS_ACTIVATE=(
   FroshDevelopmentHelper
   YireoAdditionalUserCommands
+  YireoCommandSystemInfo
 );
 
 echo "What Shopware version do want to install?"
@@ -120,13 +121,16 @@ bin/console system:setup -n \
 
 bin/console system:install --basic-setup
 
-# TODO check why you need this?
-read -p "Also run build admin and Store ? [Y/n] "
-echo ""
-if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-  bin/build-administration.sh
-  bin/build-storefront.sh
+if [[ $SKIP == "true" ]]; then
+else
+  # TODO check why you need this?
+  read -p "Also run build admin and Store ? [Y/n] "
+  echo ""
+  if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+    bin/build-administration.sh
+    bin/build-storefront.sh
 fi;
+fi
 
 HTACCESS=.htaccess
 echo 'RewriteCond %{HTTPS} !=on [or]' >> $HTACCESS
