@@ -120,7 +120,6 @@ bin/console system:setup -n \
 
 bin/console system:install --basic-setup
 
-# TODO na vragen bij Jisse waarom doe je dit?
 read -p "Also run build admin and Store ? [Y/n] "
 echo ""
 if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
