@@ -4,7 +4,8 @@ GITNAME="$(git config --global --get user.name | head -n1 | cut -d " " -f1)"
 GITEMAIL="$(git config --global --get user.email)"
 NAME="$1"
 DOMAIN="test"
-ADMINNAME="admin_$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
+ADMINNAME="$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
+ADMINPASS="admin@123"
 SKIP="false"
 SECURE="true"
 
@@ -101,7 +102,7 @@ if [[ $SKIP == "false" ]]; then
   read -p "Firstname (${GITNAME}) or: " USERFIRST && echo ""
   read -p "Lastname (admin) or: " USERLAST && echo ""
   read -p "Admin name (${ADMINNAME}) or: " USERNAME && echo ""
-  read -sp "Password (admin123) or: " USERPASS && echo ""
+  read -sp "Password ($ADMINPASS) or: " USERPASS && echo ""
   read -p "BackendURL (admin) or: " BACKURL && echo ""
 fi
 

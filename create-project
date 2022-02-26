@@ -28,6 +28,7 @@ if [[ -z "$PROJECT_TYPE" ]]; then
   done
 fi
 
+# TODO https://gitlab.yireo.com/yireo-tools/dev-setup/-/blob/master/bin/includes/choose-host.sh
 # Ask for an type if not set
 if [[ -z "$PROJECT_TYPE" ]]; then
   echo ""

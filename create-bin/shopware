@@ -1,31 +1,161 @@
 #!/bin/bash
 
+GITNAME="$(git config --global --get user.name | head -n1 | cut -d " " -f1)"
+GITEMAIL="$(git config --global --get user.email)"
+NAME="$1"
+DOMAIN="test"
+ADMINNAME="$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
+ADMINPASS="admin@123"
+SKIP="false"
+SECURE="true"
+
 RESET='\033[0m'
 BOLD='\033[1m'
 
 NAME="$1"
+SWVERSION="6.4"
+
+PLUGINS=();
+
+DEVPLUGINS=(
+  frosh/development-helper
+  yireo/shopware6-additional-user-commands
+  yireo/shopware6-command-system-info
+);
+
+SWPLUGINS_ACTIVATE=(
+  FroshDevelopmentHelper
+  YireoAdditionalUserCommands
+);
+
+echo "What Shopware version do want to install?"
+echo "  - empty = 6.4 latest"
+echo "  Or use your own shopware version"
+read -p "Version: " VERSION
+if [[ -n "$VERSION" ]]; then
+  echo "Using magento $VERSION"
+  SWVERSION="$VERSION"
+else
+  echo "Using magento $SWVERSION"
+fi
 
 if [[ -z "$NAME" ]]; then
   echo "Shopware needs a project name" && exit
 fi
 
-git clone git@github.com:shopware/development.git $NAME
+read -p "Run quick install? [Y/n] " && echo ""
+if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  SKIP="true"
+fi
+
+composer create-project shopware/production:$SWVERSION $NAME
 
 cd $NAME
 
 if command -v valet &> /dev/null; then
-  valet db create $DBNAME
+  echo "creating new database"
+  valet db create $NAME
+else
+  echo "First create a datebase for you Magento project"
+  read -rsn1 -p "When ready, press any key to continue"
+fi
+
+if command -v valet &> /dev/null; then
+  valet secure
 else
   echo "First create a datebase for you Shopware project"
   read -rsn1 -p "When ready, press any key to continue"
 fi
 
-composer install
+# Add composer repositories.shopware-packages
+# Also needs token to work
+composer config repositories.shopware-packages '{"type": "composer", "url": "https://packages.shopware.com"}'
 
-if command -v valet &> /dev/null; then
-  echo "Valet linking public to this domain"
-  cd public && valet link $NAME && cd ..
+echo "Adjusting composer settings to allow dev packages"
+composer config minimum-stability dev
+composer config prefer-stable true
+
+echo "Setting up local composer folder"
+mkdir -p package-source
+composer config repositories.local-packages path package-source/*/*
+
+echo "Adding Shopware plugins"
+if [[ $SKIP == "true" ]]; then
+  for i in "${PLUGINS[@]}"; do
+    composer require --no-update $i
+  done;
+else
+  for i in "${PLUGINS[@]}"; do
+    read -p "Also install $i? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      composer require --no-update $i
+    fi
+  done;
 fi
 
-bin/setup
+if [[ $SKIP == "true" ]]; then
+  for i in "${DEVPLUGINS[@]}"; do
+    composer require --dev --no-update $i
+  done;
+else
+  for i in "${DEVPLUGINS[@]}"; do
+    read -p "Also install $i? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      composer require --dev --no-update $i
+    fi
+  done;
+fi
 
+composer install
+
+touch .shopware-valet
+echo '.shopware-valet' >> .gitignore
+
+bin/console system:setup -n \
+  --generate-jwt-keys \
+  --app-env="dev" \
+  --app-url="https://${NAME}.test" \
+  --database-url="mysql://root:root@localhost:3306/${NAME}" \
+  --http-cache-enabled="0"
+
+bin/console system:install --basic-setup
+
+# TODO na vragen bij Jisse waarom doe je dit?
+read -p "Also run build admin and Store ? [Y/n] "
+echo ""
+if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+  bin/build-administration.sh
+  bin/build-storefront.sh
+fi;
+
+HTACCESS=.htaccess
+echo 'RewriteCond %{HTTPS} !=on [or]' >> $HTACCESS
+echo -e "RewriteCond %{HTTP_HOST} (^${NAME}\.test$)" >> $HTACCESS
+echo -e "RewriteRule (.*) https://${NAME}\.test}%{REQUEST_URI} [L,R=301]" >> $HTACCESS
+
+bin/console plugin:refresh
+if [[ $SKIP == "true" ]]; then
+  for i in "${SWPLUGINS_ACTIVATE[@]}"; do
+    bin/console plugin:install --activate $i
+  done;
+else
+  for i in "${SWPLUGINS_ACTIVATE[@]}"; do
+    read -p "Also activate $i? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      bin/console plugin:install --activate $i
+    fi
+  done;
+fi
+
+bin/console user:create \
+  --admin \
+  --email="${GITEMAIL}" \
+  --firstName="${GITNAME}" \
+  --lastName="Admin" \
+  --password="${ADMINPASS}" \
+  --no-interaction \
+  $ADMINNAME
+
+bin/console user:delete --username=admin
+
+bin/console cache:clear
