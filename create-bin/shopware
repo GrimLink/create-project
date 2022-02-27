@@ -73,13 +73,13 @@ composer config repositories.local-packages path package-source/*/*
 echo "Adding Shopware plugins"
 if [[ $SKIP == "true" ]]; then
   for i in "${PLUGINS[@]}"; do
-    composer require --no-update $i
+    composer require $i
   done;
 else
   for i in "${PLUGINS[@]}"; do
     read -p "Also install $i? [Y/n] " && echo ""
     if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-      composer require --no-update $i
+      composer require $i
     fi
   done;
 fi
