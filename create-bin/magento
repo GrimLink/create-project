@@ -20,7 +20,7 @@ echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
   echo "Using magento 2.4";
-  MVERSION="2.4.3"
+  MVERSION="2.4.4"
 elif [[ "$VERSION" == "2.3" ]]; then
   echo "Using magento 2.3 latest"
   MVERSION="2.3.6"
@@ -33,6 +33,7 @@ PLUGINS=(
   community-engineering/language-nl_nl
   siteation/magento2-module-storeinfo
   siteation/magento2-module-storeinfo-extra
+  reessolutions/db-override
 );
 
 DEVPLUGINS=();
@@ -110,7 +111,7 @@ if [[ -z "$USEREMAIL" ]]; then USEREMAIL="$GITEMAIL"; fi
 if [[ -z "$USERFIRST" ]]; then USERFIRST="$GITNAME"; fi
 if [[ -z "$USERLAST" ]]; then USERLAST="admin"; fi
 if [[ -z "$USERNAME" ]]; then USERNAME="$ADMINNAME"; fi
-if [[ -z "$USERPASS" ]]; then USERPASS="admin123"; fi
+if [[ -z "$USERPASS" ]]; then USERPASS="$ADMINPASS"; fi
 if [[ -z "$BACKURL" ]]; then BACKURL="admin"; fi
 
 # Setup installation
@@ -175,15 +176,7 @@ fi
 
 # Run installation
 echo "Running instalation.. Enjoy a cup of coffee in the meantime"
-COMPOSER_MEMORY_LIMIT=-1 composer install
-
-# Safety check for mariaDB with installation
-MARIADB_VERSION=$(mariadb -V);
-if [[ $MARIADB_VERSION =~ "10.5.4" ]] || [[ $$MARIADB_VERSION =~ "10.6.4" ]]; then
-  echo "Before continuing, make sure you the right mariadb version set in your etc/di.xml"
-  read -rsn1 -p "When ready, press any key to continue";
-  echo "";
-fi
+composer install
 
 bin/magento setup:install \
   --base-url="${URL}" \
