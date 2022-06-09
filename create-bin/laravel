@@ -1,12 +1,36 @@
 #!/bin/bash
 
+GITNAME="$(git config --global --get user.name | head -n1 | cut -d " " -f1)"
+GITEMAIL="$(git config --global --get user.email)"
 NAME="$1"
 DOMAIN="test"
+ADMINNAME="$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
+ADMINPASS="admin@123"
 SKIP="false"
+SECURE="true"
+LARAVEL_VALET="false"
+WEPROVIDE_VALET="false"
+
+DEFAULT_DBUSER="root"
+DEFAULT_DBPASS="root"
 
 if [[ -z "$NAME" ]]; then
   echo "Laravel needs a project name" && exit
 fi
+
+if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
+  LARAVEL_VALET="true"
+fi
+
+if [[ $(valet -V | cut -f1 -d ' ') == "Valet+" ]]; then
+  WEPROVIDE_VALET="true"
+fi
+
+PLUGINS=();
+
+DEVPLUGINS=(
+  barryvdh/laravel-debugbar
+);
 
 read -p "Run quick install? [Y/n] " && echo ""
 if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
@@ -16,54 +40,90 @@ fi
 # Setup for instalation
 if [[ $SKIP == "false" ]]; then
   read -p "DB name: ${NAME} or " DBNAME && echo ""
-  read -p "DB Password (root) or: " DBPASS && echo ""
+  read -p "DB User (${DEFAULT_DBUSER}) or: " DBUSER && echo ""
+  read -p "DB Password (${DEFAULT_DBPASS}) or: " DBPASS && echo ""
 fi
 
 if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
-if [[ -z "$DBPASS" ]]; then DBPASS="root"; fi
+if [[ -z "$DBUSER" ]]; then DBUSER="${DEFAULT_DBUSER}"; fi
+if [[ -z "$DBPASS" ]]; then DBPASS="${DEFAULT_DBPASS}"; fi
+
+MYSQL="mysql -u $DBUSER --password=${DBPASS} --socket /tmp/mysql_3306.sock"
 
 if command -v valet &> /dev/null; then
-  valet db create $DBNAME
+  if [[ $LARAVEL_VALET == "true" ]]; then
+    echo "creating new database"
+    echo "DROP DATABASE ${DBNAME};" | $MYSQL
+    echo "CREATE DATABASE ${DBNAME};" | $MYSQL
+  elif [[ $WEPROVIDE_VALET == "true" ]]; then
+    echo "creating new database"
+    valet db create $DBNAME
+  fi
+elif command -v mysql &> /dev/null; then
+  echo "creating new database"
+  echo "DROP DATABASE ${DBNAME};" | $MYSQL
+  echo "CREATE DATABASE ${DBNAME};" | $MYSQL
 else
-  echo "First create a datebase for you Laravel project"
+  echo "First create a datebase for you Magento project"
   read -rsn1 -p "When ready, press any key to continue"
 fi
 
-echo "Set URL"
-echo " - empty = http://${DBNAME}.${DOMAIN}/"
-echo " - s or secure = https://${DBNAME}.${DOMAIN}/"
-echo " - Or use your own"
-read URL
-if [[ -z "$URL" ]]; then
-  URL="http://${DBNAME}.${DOMAIN}/"
-elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
+if [[ $SKIP == "false" ]]; then
+  if [[ $SECURE == "true" ]]; then
+    read -p "Use secure url? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then SECURE="false"; fi;
+  else
+    read -p "Use secure url? [y/N] " && echo ""
+    if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then SECURE="true"; fi;
+  fi
+fi
+
+if [[ $SECURE == "true" ]]; then
   URL="https://${DBNAME}.${DOMAIN}/"
   if command -v valet &> /dev/null; then
     echo "Setting domain ssl certificate"
     valet secure $NAME
   fi
+else
+  URL="http://${DBNAME}.${DOMAIN}/"
 fi
 
 # Run installation
-composer create-project --prefer-dist laravel/laravel $NAME &&
+composer create-project laravel/laravel $NAME &&
 cd $NAME
 
 echo "Setting .env variables"
-sed -i '' "s/DB_DATABASE=laravel/DB_DATABASE=$DBNAME/g" .env
-sed -i '' "s/DB_PASSWORD=/DB_PASSWORD=$DBPASS/g" .env
+sed -i '' "s#DB_DATABASE=laravel#DB_DATABASE=$DBNAME#g" .env
+sed -i '' "s#DB_PASSWORD=#DB_PASSWORD=$DBPASS#g" .env
 sed -i '' "s#APP_URL=http://localhost#APP_URL=$URL#g" .env
 
-# Add aditonal plugins
+echo "Adding Laravel Plugins"
 if [[ $SKIP == "true" ]]; then
-  composer require barryvdh/laravel-debugbar --dev
+  for i in "${PLUGINS[@]}"; do
+    composer require --no-update $i
+  done;
 else
-  read -p "Also install Debugbar? [Y/n] " && echo ""
-  if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-    composer require barryvdh/laravel-debugbar --dev
-  fi
+  for i in "${PLUGINS[@]}"; do
+    read -p "Also install $i? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      composer require --no-update $i
+    fi
+  done;
 fi
 
-echo "Adding laravel UI"
-composer require laravel/ui
-php artisan ui vue --auth
-npm install && npm run dev
+if [[ $SKIP == "true" ]]; then
+  for i in "${DEVPLUGINS[@]}"; do
+    composer require --dev --no-update $i
+  done;
+else
+  for i in "${DEVPLUGINS[@]}"; do
+    read -p "Also install $i? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+      composer require --dev --no-update $i
+    fi
+  done;
+fi
+
+# Run installation
+echo "Running instalation.. Enjoy a cup of coffee in the meantime"
+composer install
