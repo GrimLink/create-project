@@ -29,10 +29,6 @@ BINTASKS=(
   'shopware'
   'wordpress'
   'laravel'
-  'react'
-  'gatsby'
-  'vue'
-  'gridsome'
   'october'
   'jigsaw'
 );
