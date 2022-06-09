@@ -8,9 +8,24 @@ ADMINNAME="$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
 ADMINPASS="admin@123"
 SKIP="false"
 SECURE="true"
+LARAVEL_VALET="false"
+WEPROVIDE_VALET="false"
+
+DEFAULT_DBHOST="localhost"
+DEFAULT_DBUSER="root"
+DEFAULT_DBPASS="root"
 
 if [[ -z "$NAME" ]]; then
   echo "The Magento install requires a name!" && exit
+fi
+
+if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
+  DEFAULT_DBHOST="127.0.0.1"
+  LARAVEL_VALET="true"
+fi
+
+if [[ $(valet -V | cut -f1 -d ' ') == "Valet+" ]]; then
+  WEPROVIDE_VALET="true"
 fi
 
 echo "What Magento version do want to install?"
@@ -36,7 +51,10 @@ PLUGINS=(
   reessolutions/db-override
 );
 
-DEVPLUGINS=();
+DEVPLUGINS=(
+  mage2tv/magento-cache-clean
+  msp/devtools
+);
 
 SETCONFIG=(
   "config:set admin/security/session_lifetime 86400"
@@ -59,20 +77,32 @@ fi
 
 # Setup for instalation
 if [[ $SKIP == "false" ]]; then
-  read -p "DB Host (localhost) or: " DBHOST && echo ""
+  read -p "DB Host (${DEFAULT_DBHOST}) or: " DBHOST && echo ""
   read -p "DB name: ${NAME} or " DBNAME && echo ""
-  read -p "DB User (root) or: " DBUSER && echo ""
-  read -p "DB Password (root) or: " DBPASS && echo ""
+  read -p "DB User (${DEFAULT_DBUSER}) or: " DBUSER && echo ""
+  read -p "DB Password (${DEFAULT_DBPASS}) or: " DBPASS && echo ""
 fi
 
-if [[ -z "$DBHOST" ]]; then DBHOST="localhost"; fi
+if [[ -z "$DBHOST" ]]; then DBHOST="${DEFAULT_DBHOST}"; fi
 if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
-if [[ -z "$DBUSER" ]]; then DBUSER="root"; fi
-if [[ -z "$DBPASS" ]]; then DBPASS="root"; fi
+if [[ -z "$DBUSER" ]]; then DBUSER="${DEFAULT_DBUSER}"; fi
+if [[ -z "$DBPASS" ]]; then DBPASS="${DEFAULT_DBPASS}"; fi
+
+MYSQL="mysql -u $DBUSER --password=${DBPASS}"
 
 if command -v valet &> /dev/null; then
+  if [[ $LARAVEL_VALET == "true" ]]; then
+    echo "creating new database"
+    echo "DROP DATABASE ${DBNAME};" | $MYSQL
+    echo "CREATE DATABASE ${DBNAME};" | $MYSQL
+  elif [[ $WEPROVIDE_VALET == "true" ]]; then
+    echo "creating new database"
+    valet db create $DBNAME
+  fi
+elif command -v mysql &> /dev/null; then
   echo "creating new database"
-  valet db create $DBNAME
+  echo "DROP DATABASE ${DBNAME};" | $MYSQL
+  echo "CREATE DATABASE ${DBNAME};" | $MYSQL
 else
   echo "First create a datebase for you Magento project"
   read -rsn1 -p "When ready, press any key to continue"
