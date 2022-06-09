@@ -88,7 +88,7 @@ if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
 if [[ -z "$DBUSER" ]]; then DBUSER="${DEFAULT_DBUSER}"; fi
 if [[ -z "$DBPASS" ]]; then DBPASS="${DEFAULT_DBPASS}"; fi
 
-MYSQL="mysql -u $DBUSER --password=${DBPASS}"
+MYSQL="mysql -u $DBUSER --password=${DBPASS} --socket /tmp/mysql_3306.sock"
 
 if command -v valet &> /dev/null; then
   if [[ $LARAVEL_VALET == "true" ]]; then
