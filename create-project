@@ -7,10 +7,6 @@ OPTIONS=(
   'shopware'
   'wordpress'
   'laravel'
-  'react'
-  'gatsby'
-  'vue'
-  'gridsome'
   'october'
   'jigsaw'
 );
@@ -52,18 +48,6 @@ case "$PROJECT_TYPE" in
     ;;
   laravel|[lL])
     bash $(dirname "${BASH_SOURCE}")/create-bin/laravel $@;
-    ;;
-  react)
-    bash $(dirname "${BASH_SOURCE}")/create-bin/react $@;
-    ;;
-  gatsby)
-    bash $(dirname "${BASH_SOURCE}")/create-bin/gatsby $@;
-    ;;
-  vue)
-    bash $(dirname "${BASH_SOURCE}")/create-bin/vue $@;
-    ;;
-  gridsome)
-    bash $(dirname "${BASH_SOURCE}")/create-bin/gridsome $@;
     ;;
   octobercms|[oO][cC][tT])
     bash $(dirname "${BASH_SOURCE}")/create-bin/october $@;
