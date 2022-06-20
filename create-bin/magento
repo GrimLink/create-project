@@ -5,7 +5,7 @@ GITEMAIL="$(git config --global --get user.email)"
 NAME="$1"
 DOMAIN="test"
 ADMINNAME="$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
-ADMINPASS="admin@123"
+ADMINPASS="admin123$"
 SKIP="false"
 SECURE="true"
 LARAVEL_VALET="false"
@@ -88,23 +88,23 @@ if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
 if [[ -z "$DBUSER" ]]; then DBUSER="${DEFAULT_DBUSER}"; fi
 if [[ -z "$DBPASS" ]]; then DBPASS="${DEFAULT_DBPASS}"; fi
 
-MYSQL="mysql -u $DBUSER --password=${DBPASS}"
+MYSQL="mysql -u $DBUSER --password=${DBPASS} --socket /tmp/mysql_3306.sock"
 
 if command -v valet &> /dev/null; then
   if [[ $LARAVEL_VALET == "true" ]]; then
     echo "creating new database"
-    echo "DROP DATABASE ${DBNAME};" | $MYSQL
-    echo "CREATE DATABASE ${DBNAME};" | $MYSQL
+    $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
+    $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
   elif [[ $WEPROVIDE_VALET == "true" ]]; then
     echo "creating new database"
     valet db create $DBNAME
   fi
 elif command -v mysql &> /dev/null; then
   echo "creating new database"
-  echo "DROP DATABASE ${DBNAME};" | $MYSQL
-  echo "CREATE DATABASE ${DBNAME};" | $MYSQL
+  $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
+  $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
 else
-  echo "First create a datebase for you Magento project"
+  echo "First create a datebase for your Magento project"
   read -rsn1 -p "When ready, press any key to continue"
 fi
 
@@ -119,13 +119,13 @@ if [[ $SKIP == "false" ]]; then
 fi
 
 if [[ $SECURE == "true" ]]; then
-  URL="https://${DBNAME}.${DOMAIN}/"
+  URL="https://${NAME}.${DOMAIN}/"
   if command -v valet &> /dev/null; then
     echo "Setting domain ssl certificate"
     valet secure $NAME
   fi
 else
-  URL="http://${DBNAME}.${DOMAIN}/"
+  URL="http://${NAME}.${DOMAIN}/"
 fi
 
 if [[ $SKIP == "false" ]]; then

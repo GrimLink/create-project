@@ -4,14 +4,23 @@ GITNAME="$(git config --global --get user.name | head -n1 | cut -d " " -f1)"
 GITEMAIL="$(git config --global --get user.email)"
 NAME="$1"
 DOMAIN="test"
-ADMINNAME="admin_$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
+ADMINNAME="$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
+ADMINPASS="admin123$"
 SKIP="false"
+SECURE="true"
+LARAVEL_VALET="false"
+WEPROVIDE_VALET="false"
+
+DEFAULT_DBHOST="localhost"
+DEFAULT_DBUSER="root"
+DEFAULT_DBPASS="root"
 
 PLUGINS=(
-  kadence-blocks
   duplicate-post
   disable-json-api
   advanced-custom-fields
+  gallery-block-lightbox
+  layout-grid
 );
 
 # Check if dependacy exist
@@ -24,6 +33,15 @@ if [[ -z "$NAME" ]]; then
   echo "The WP install requires a name" && exit
 fi
 
+if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
+  DEFAULT_DBHOST="127.0.0.1"
+  LARAVEL_VALET="true"
+fi
+
+if [[ $(valet -V | cut -f1 -d ' ') == "Valet+" ]]; then
+  WEPROVIDE_VALET="true"
+fi
+
 read -p "Run quick install? [Y/n] " && echo ""
 if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
   SKIP="true"
@@ -31,48 +49,60 @@ fi
 
 # Setup for instalation
 if [[ $SKIP == "false" ]]; then
-  read -p "DB Host (localhost) or: " DBHOST && echo ""
+  read -p "DB Host (${DEFAULT_DBHOST}) or: " DBHOST && echo ""
   read -p "DB name: ${NAME} or " DBNAME && echo ""
-  read -p "DB User (root) or: " DBUSER && echo ""
-  read -p "DB Password (root) or: " DBPASS && echo ""
+  read -p "DB User (${DEFAULT_DBUSER}) or: " DBUSER && echo ""
+  read -p "DB Password (${DEFAULT_DBPASS}) or: " DBPASS && echo ""
 fi
 
-if [[ -z "$DBHOST" ]]; then DBHOST="localhost"; fi
+if [[ -z "$DBHOST" ]]; then DBHOST="${DEFAULT_DBHOST}"; fi
 if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
-if [[ -z "$DBUSER" ]]; then DBUSER="root"; fi
-if [[ -z "$DBPASS" ]]; then DBPASS="root"; fi
+if [[ -z "$DBUSER" ]]; then DBUSER="${DEFAULT_DBUSER}"; fi
+if [[ -z "$DBPASS" ]]; then DBPASS="${DEFAULT_DBPASS}"; fi
+
+MYSQL="mysql -u '$DBUSER' --password=${DBPASS} --socket /tmp/mysql_3306.sock"
 
 if command -v valet &> /dev/null; then
-  valet db create $DBNAME
+  if [[ $LARAVEL_VALET == "true" ]]; then
+    echo "creating new database"
+    $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
+    $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
+  elif [[ $WEPROVIDE_VALET == "true" ]]; then
+    echo "creating new database"
+    valet db create $DBNAME
+  fi
+elif command -v mysql &> /dev/null; then
+  echo "creating new database"
+  $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
+  $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
 else
-  echo "First create a datebase for you Wordpress project"
+  echo "First create a datebase for your Wordpress project"
   read -rsn1 -p "When ready, press any key to continue"
 fi
 
-echo "Set URL"
-echo " - empty = http://${DBNAME}.${DOMAIN}/"
-echo " - s or secure = https://${DBNAME}.${DOMAIN}/"
-echo " - Or use your own"
-read URL
-if [[ -z "$URL" ]]; then
-  URL="http://${DBNAME}.${DOMAIN}/"
-elif [[ "$URL" == "s" ]] || [[ "$URL" == "secure" ]]; then
-  URL="https://${DBNAME}.${DOMAIN}/"
+if [[ $SKIP == "false" ]]; then
+  if [[ $SECURE == "true" ]]; then
+    read -p "Use secure url? [Y/n] " && echo ""
+    if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then SECURE="false"; fi;
+  else
+    read -p "Use secure url? [y/N] " && echo ""
+    if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then SECURE="true"; fi;
+  fi
+fi
+
+if [[ $SECURE == "true" ]]; then
+  URL="https://${NAME}.${DOMAIN}/"
   if command -v valet &> /dev/null; then
     echo "Setting domain ssl certificate"
     valet secure $NAME
   fi
-fi
-
-if [[ $SKIP == "false" ]]; then
-  read -p "Email (${GITEMAIL}) or: " USEREMAIL && echo ""
-  read -p "Admin name (${ADMINNAME}) or: " USERNAME && echo ""
-  read -sp "Password (admin123) or: " USERPASS && echo ""
+else
+  URL="http://${NAME}.${DOMAIN}/"
 fi
 
 if [[ -z "$USEREMAIL" ]]; then USEREMAIL="$GITEMAIL"; fi
 if [[ -z "$USERNAME" ]]; then USERNAME="$ADMINNAME"; fi
-if [[ -z "$USERPASS" ]]; then USERPASS="admin123"; fi
+if [[ -z "$USERPASS" ]]; then USERPASS="$ADMINPASS"; fi
 
 # Run installation
 mkdir $NAME
@@ -103,11 +133,13 @@ if [ ! -d "wp-content" ]; then
 fi;
 
 # Delete non-used themes
-wp theme delete twentyseventeen twentynineteen
+wp theme delete twentytwenty twentytwentyone
 
-wp scaffold child-theme twentytwenty-child --parent_theme=twentytwenty --activate
+# Create child theme and activate it
 
-cp wp-content/themes/twentytwenty/screenshot.png wp-content/themes/twentytwenty-child
+wp scaffold child-theme twentytwentytwo-child --parent_theme=twentytwentytwo  --activate
+
+cp -R wp-content/themes/twentytwentytwo/{templates,parts,styles,screenshot.png,theme.json} wp-content/themes/twentytwentytwo-child
 
 # Delete non-used plugins
 wp plugin delete akismet
@@ -116,7 +148,7 @@ wp plugin delete hello
 
 # install languages
 wp language core install nl_NL &&
-wp language theme update twentytwenty
+wp language theme update twentytwentytwo
 
 # Add aditonal plugins
 if [[ $SKIP == "true" ]]; then

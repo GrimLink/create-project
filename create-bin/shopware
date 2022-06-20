@@ -5,15 +5,21 @@ GITEMAIL="$(git config --global --get user.email)"
 NAME="$1"
 DOMAIN="test"
 ADMINNAME="$(echo "$GITNAME" | tr '[:upper:]' '[:lower:]')"
-ADMINPASS="admin@123"
+ADMINPASS="admin123$"
 SKIP="false"
 SECURE="true"
+LARAVEL_VALET="false"
+WEPROVIDE_VALET="false"
 
 RESET='\033[0m'
 BOLD='\033[1m'
 
 NAME="$1"
 SWVERSION="6.4"
+
+DEFAULT_DBHOST="localhost"
+DEFAULT_DBUSER="root"
+DEFAULT_DBPASS="root"
 
 PLUGINS=(
   frosh/development-helper
@@ -25,9 +31,22 @@ PLUGINS=(
 SWPLUGINS_ACTIVATE=(
   FroshDevelopmentHelper
   YireoAdditionalUserCommands
-  YireoAdditionalConfigCommands
+  YireoAdditionalConfigCommands  
   YireoCommandSystemInfo
 );
+
+if [[ -z "$NAME" ]]; then
+  echo "Shopware needs a project name" && exit
+fi
+
+if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
+  DEFAULT_DBHOST="127.0.0.1"
+  LARAVEL_VALET="true"
+fi
+
+if [[ $(valet -V | cut -f1 -d ' ') == "Valet+" ]]; then
+  WEPROVIDE_VALET="true"
+fi
 
 echo "What Shopware version do want to install?"
 echo "  - empty = 6.4 latest"
@@ -40,26 +59,56 @@ else
   echo "Using shopware $SWVERSION"
 fi
 
-if [[ -z "$NAME" ]]; then
-  echo "Shopware needs a project name" && exit
-fi
-
 read -p "Run quick install? [Y/n] " && echo ""
 if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
   SKIP="true"
 fi
 
 # composer create-project shopware/production:$SWVERSION $NAME
-git clone -b 6.4 https://github.com/shopware/production $NAME
+git clone -b 6.4.12.0 https://github.com/shopware/production $NAME
 cd $NAME
 
+# Setup for instalation
+if [[ $SKIP == "false" ]]; then
+  read -p "DB Host (${DEFAULT_DBHOST}) or: " DBHOST && echo ""
+  read -p "DB name: ${NAME} or " DBNAME && echo ""
+  read -p "DB User (${DEFAULT_DBUSER}) or: " DBUSER && echo ""
+  read -p "DB Password (${DEFAULT_DBPASS}) or: " DBPASS && echo ""
+fi
+
+if [[ -z "$DBHOST" ]]; then DBHOST="${DEFAULT_DBHOST}"; fi
+if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
+if [[ -z "$DBUSER" ]]; then DBUSER="${DEFAULT_DBUSER}"; fi
+if [[ -z "$DBPASS" ]]; then DBPASS="${DEFAULT_DBPASS}"; fi
+
+MYSQL="mysql -u $DBUSER --password=${DBPASS} --socket /tmp/mysql_3306.sock"
+
 if command -v valet &> /dev/null; then
+  if [[ $LARAVEL_VALET == "true" ]]; then
+    echo "creating new database"
+    $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
+    $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
+  elif [[ $WEPROVIDE_VALET == "true" ]]; then
+    echo "creating new database"
+    valet db create $DBNAME
+  fi
+elif command -v mysql &> /dev/null; then
   echo "creating new database"
-  valet db create $NAME
-  valet secure
+  $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
+  $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
 else
   echo "First create a datebase for you Shopware project"
   read -rsn1 -p "When ready, press any key to continue"
+fi
+
+if [[ $SECURE == "true" ]]; then
+  URL="https://${NAME}.${DOMAIN}/"
+  if command -v valet &> /dev/null; then
+    echo "Setting domain ssl certificate"
+    valet secure $NAME
+  fi
+else
+  URL="http://${NAME}.${DOMAIN}/"
 fi
 
 echo "Adjusting composer settings to allow dev packages"
@@ -93,7 +142,7 @@ bin/console system:setup -n \
   --generate-jwt-keys \
   --app-env="dev" \
   --app-url="https://${NAME}.test" \
-  --database-url="mysql://root:root@localhost:3306/${NAME}" \
+  --database-url="mysql://${DBUSER}:${DBPASS}@${DBHOST}:3306/${NAME}" \
   --http-cache-enabled="0"
 
 bin/console system:install --basic-setup
