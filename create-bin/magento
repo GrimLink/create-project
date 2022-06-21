@@ -48,12 +48,13 @@ PLUGINS=(
   community-engineering/language-nl_nl
   siteation/magento2-module-storeinfo
   siteation/magento2-module-storeinfo-extra
-  reessolutions/db-override
 );
 
 DEVPLUGINS=(
   mage2tv/magento-cache-clean
   msp/devtools
+  reessolutions/db-override
+  yireo/Yireo_Whoops
 );
 
 SETCONFIG=(
