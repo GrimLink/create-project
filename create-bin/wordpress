@@ -150,6 +150,9 @@ wp plugin delete hello
 wp language core install nl_NL &&
 wp language theme update twentytwentytwo
 
+# update plugin languages
+wp language plugin install --all en_GB nl_NL
+
 # Add aditonal plugins
 if [[ $SKIP == "true" ]]; then
   for i in "${PLUGINS[@]}"; do
