@@ -51,10 +51,7 @@ PLUGINS=(
 );
 
 DEVPLUGINS=(
-  mage2tv/magento-cache-clean
-  msp/devtools
   reessolutions/db-override
-  yireo/Yireo_Whoops
 );
 
 SETCONFIG=(
@@ -65,10 +62,6 @@ SETCONFIG=(
   "deploy:mode:set developer"
   "module:disable Magento_Csp"
   "module:disable Magento_TwoFactorAuth"
-  "setup:upgrade"
-  "cache:disable full_page block_html layout"
-  "indexer:reindex"
-  "cache:flush"
 );
 
 read -p "Run quick install? [Y/n] " && echo ""
@@ -241,3 +234,20 @@ else
     done;
   fi
 fi
+
+# if mage
+if command -v mage &>/dev/null; then
+  # Add hyva
+  read -p "Also install Hyvä? [Y/n] "
+  echo ""
+  if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+    mage add hyva
+  else
+    bin/magento setup:upgrade
+  fi;
+else
+  bin/magento setup:upgrade
+fi
+
+bin/magento indexer:reindex
+bin/magento cache:flush
