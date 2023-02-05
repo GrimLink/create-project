@@ -46,8 +46,8 @@ fi
 
 PLUGINS=(
   community-engineering/language-nl_nl
-  siteation/magento2-module-storeinfo
-  siteation/magento2-module-storeinfo-extra
+  siteation/magento2-storeinfo
+  siteation/magento2-storeinfo-extra
 );
 
 DEVPLUGINS=(
