@@ -9,16 +9,19 @@ ADMINPASS="admin123$"
 SKIP="false"
 SECURE="true"
 LARAVEL_VALET="false"
-WEPROVIDE_VALET="false"
 
-DEFAULT_DBHOST="localhost"
+DEFAULT_DBHOST="127.0.0.1"
 DEFAULT_DBUSER="root"
 DEFAULT_DBPASS="root"
+MYSQL="mysql -proot"
 
 PLUGINS=(
   duplicate-post
   disable-json-api
   advanced-custom-fields
+  create-block-theme
+  pattern-manager
+  block-visibility
   gallery-block-lightbox
   layout-grid
 );
@@ -36,10 +39,6 @@ fi
 if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
   DEFAULT_DBHOST="127.0.0.1"
   LARAVEL_VALET="true"
-fi
-
-if [[ $(valet -V | cut -f1 -d ' ') == "Valet+" ]]; then
-  WEPROVIDE_VALET="true"
 fi
 
 read -p "Run quick install? [Y/n] " && echo ""
@@ -60,21 +59,10 @@ if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
 if [[ -z "$DBUSER" ]]; then DBUSER="${DEFAULT_DBUSER}"; fi
 if [[ -z "$DBPASS" ]]; then DBPASS="${DEFAULT_DBPASS}"; fi
 
-MYSQL="mysql -u '$DBUSER' --password=${DBPASS} --socket /tmp/mysql_3306.sock"
-
-if command -v valet &> /dev/null; then
-  if [[ $LARAVEL_VALET == "true" ]]; then
+if command -v mysql &> /dev/null; then
     echo "creating new database"
     $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
     $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
-  elif [[ $WEPROVIDE_VALET == "true" ]]; then
-    echo "creating new database"
-    valet db create $DBNAME
-  fi
-elif command -v mysql &> /dev/null; then
-  echo "creating new database"
-  $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
-  $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
 else
   echo "First create a datebase for your Wordpress project"
   read -rsn1 -p "When ready, press any key to continue"
@@ -133,13 +121,7 @@ if [ ! -d "wp-content" ]; then
 fi;
 
 # Delete non-used themes
-wp theme delete twentytwenty twentytwentyone
-
-# Create child theme and activate it
-
-wp scaffold child-theme twentytwentytwo-child --parent_theme=twentytwentytwo  --activate
-
-cp -R wp-content/themes/twentytwentytwo/{templates,parts,styles,screenshot.png,theme.json} wp-content/themes/twentytwentytwo-child
+wp theme delete twentytwentyone twentytwentytwo
 
 # Delete non-used plugins
 wp plugin delete akismet
@@ -148,10 +130,7 @@ wp plugin delete hello
 
 # install languages
 wp language core install nl_NL &&
-wp language theme update twentytwentytwo
-
-# update plugin languages
-wp language plugin install --all en_GB nl_NL
+wp language theme update --all
 
 # Add aditonal plugins
 if [[ $SKIP == "true" ]]; then
@@ -175,6 +154,10 @@ else
   fi
 fi
 
+# update plugin languages
+wp language plugin install --all en_GB nl_NL &&
+wp language plugin update --all en_GB nl_NL
+
 read -p "Also setup GraphQL Api? [y/N] " && echo ""
 if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
   cd wp-content/plugins
@@ -185,3 +168,13 @@ if [[ $REPLY =~ ^[yY]|[yY][eE][sS]$ ]]; then
   wp plugin activate wp-graphql-acf
   echo "You can test your endpoint via /graphql";
 fi
+
+# wp-cli update all toevoegen als Helper Script ?
+# wp cli cache clear
+# wp core update
+# wp core update-db
+# wp plugin update --all
+# wp theme update --all
+# wp language core update
+# wp language plugin update --all
+# wp language theme update --all
