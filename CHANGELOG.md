@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2023-03-30
+### Improvement
+- Updated script to work with PHP8 and Valet4
+- updated for use with 2023 Theme
+- added Plugins
+### Fixed
+- remove ols stuff <2023
+### ToDo
+- find the cause of the wp-cli errors
+
 ## 2023-02-05
 ### Fixed
 - Storeinfo package updates, fixes [#3](https://github.com/GrimLink/create-project/issues/3)
