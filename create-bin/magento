@@ -9,11 +9,11 @@ ADMINPASS="admin123$"
 SKIP="false"
 SECURE="true"
 LARAVEL_VALET="false"
-WEPROVIDE_VALET="false"
 
 DEFAULT_DBHOST="localhost"
 DEFAULT_DBUSER="root"
 DEFAULT_DBPASS="root"
+MYSQL="mysql -proot"
 
 if [[ -z "$NAME" ]]; then
   echo "The Magento install requires a name!" && exit
@@ -22,10 +22,6 @@ fi
 if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
   DEFAULT_DBHOST="127.0.0.1"
   LARAVEL_VALET="true"
-fi
-
-if [[ $(valet -V | cut -f1 -d ' ') == "Valet+" ]]; then
-  WEPROVIDE_VALET="true"
 fi
 
 echo "What Magento version do want to install?"
@@ -61,6 +57,7 @@ SETCONFIG=(
   "setup:config:set --page-cache=redis --page-cache-redis-server=127.0.0.1 --page-cache-redis-db=1 -n"
   "deploy:mode:set developer"
   "module:disable Magento_Csp"
+  "module:disable Magento_AdminAdobeImsTwoFactorAuth"
   "module:disable Magento_TwoFactorAuth"
 );
 
@@ -82,18 +79,7 @@ if [[ -z "$DBNAME" ]]; then DBNAME="${NAME}"; fi
 if [[ -z "$DBUSER" ]]; then DBUSER="${DEFAULT_DBUSER}"; fi
 if [[ -z "$DBPASS" ]]; then DBPASS="${DEFAULT_DBPASS}"; fi
 
-MYSQL="mysql -u $DBUSER --password=${DBPASS} --socket /tmp/mysql_3306.sock"
-
-if command -v valet &> /dev/null; then
-  if [[ $LARAVEL_VALET == "true" ]]; then
-    echo "creating new database"
-    $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
-    $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
-  elif [[ $WEPROVIDE_VALET == "true" ]]; then
-    echo "creating new database"
-    valet db create $DBNAME
-  fi
-elif command -v mysql &> /dev/null; then
+if command -v mysql &> /dev/null; then
   echo "creating new database"
   $MYSQL -e "DROP DATABASE \`${DBNAME}\`;"
   $MYSQL -e "CREATE DATABASE \`${DBNAME}\`;"
@@ -244,7 +230,7 @@ if command -v mage &>/dev/null; then
     mage add hyva
   else
     bin/magento setup:upgrade
-  fi;
+  fi
 else
   bin/magento setup:upgrade
 fi
