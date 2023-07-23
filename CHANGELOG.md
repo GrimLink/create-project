@@ -6,15 +6,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2023-07-23
+### Added
+- Remove page builder, to the Magento 2 script steps,
+  when using skip this will be removed by default
+
+### Removed
+- `reessolutions/db-override` from Magento 2 script
+
 ## 2023-03-30
-### Improvement
-- Updated script to work with PHP8 and Valet4
-- updated for use with 2023 Theme
-- added Plugins
-### Fixed
-- remove ols stuff <2023
-### ToDo
-- find the cause of the wp-cli errors
+### Changed
+- Updated Wordpress script for Laravel Valet
 
 ## 2023-02-05
 ### Fixed

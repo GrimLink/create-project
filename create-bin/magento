@@ -24,17 +24,14 @@ if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
   LARAVEL_VALET="true"
 fi
 
+# See versions at https://experienceleague.adobe.com/docs/commerce-operations/release/versions.html
 echo "What Magento version do want to install?"
-echo "  - empty = 2.4 latest"
-echo "  - 2.3 = 2.3 latest"
+echo "  - empty = latest"
 echo "  Or use your own Magento2 version"
 read -p "Version: " VERSION
 if [[ -z "$VERSION" ]]; then
-  echo "Using magento 2.4";
-  MVERSION="2.4.4"
-elif [[ "$VERSION" == "2.3" ]]; then
-  echo "Using magento 2.3 latest"
-  MVERSION="2.3.6"
+  echo "Using magento 2.4.6-p1";
+  MVERSION="2.4.6-p1"
 else
   echo "Using magento $VERSION"
   MVERSION="$VERSION"
@@ -46,9 +43,7 @@ PLUGINS=(
   siteation/magento2-storeinfo-extra
 );
 
-DEVPLUGINS=(
-  reessolutions/db-override
-);
+DEVPLUGINS=();
 
 SETCONFIG=(
   "config:set admin/security/session_lifetime 86400"
@@ -182,6 +177,18 @@ else
       composer require --dev --no-update $i
     fi
   done;
+fi
+
+# Disable page builder
+if [[ $SKIP == "true" ]]; then
+  echo "Removing the Magento 2 Page builder";
+  composer require yireo/magento2-replace-pagebuilder --no-update
+else
+  read -p "Remove the Magento 2 Page builder? [Y/n] "
+  echo ""
+  if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
+    composer require yireo/magento2-replace-pagebuilder --no-update
+  fi;
 fi
 
 # Run installation
