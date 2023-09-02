@@ -54,6 +54,7 @@ SETCONFIG=(
   "module:disable Magento_Csp"
   "module:disable Magento_AdminAdobeImsTwoFactorAuth"
   "module:disable Magento_TwoFactorAuth"
+  "module:disable Magento_AdminAnalytics"
 );
 
 read -p "Run quick install? [Y/n] " && echo ""
