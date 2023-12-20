@@ -38,8 +38,9 @@ else
 fi
 
 PLUGINS=(
-  yireo/magento2-theme-commands
   community-engineering/language-nl_nl
+  yireo/magento2-theme-commands
+  yireo/magento2-checkouttester2
   siteation/magento2-storeinfo
   siteation/magento2-storeinfo-extra
 );
