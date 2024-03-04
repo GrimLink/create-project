@@ -194,6 +194,16 @@ bin/magento setup:install \
   --db-name="${DBNAME}" \
   --db-user="${DBUSER}" \
   --db-password="${DBPASS}" \
+  --admin-firstname="${USERFIRST}" \
+  --admin-lastname="${USERLAST}" \
+  --admin-email="${USEREMAIL}" \
+  --admin-user="${USERNAME}" \
+  --admin-password="${USERPASS}" \
+  --language=en_US \
+  --currency=USD \
+  --timezone=Europe/Amsterdam \
+  --use-rewrites=1 \
+  --backend-frontname="${BACKURL}" \
   --search-engine=opensearch \
   --opensearch-host=localhost \
   --opensearch-port=9200 \
@@ -209,17 +219,7 @@ bin/magento setup:install \
   --cache-backend-redis-db=0 \
   --page-cache=redis \
   --page-cache-redis-server=127.0.0.1 \
-  --page-cache-redis-db=1 \
-  --admin-firstname="${USERFIRST}" \
-  --admin-lastname="${USERLAST}" \
-  --admin-email="${USEREMAIL}" \
-  --admin-user="${USERNAME}" \
-  --admin-password="${USERPASS}" \
-  --language=en_US \
-  --currency=USD \
-  --timezone=Europe/Amsterdam \
-  --use-rewrites=1 \
-  --backend-frontname="${BACKURL}"
+  --page-cache-redis-db=1
 
 # Disable page builder
 if [[ $SKIP == "true" ]]; then
