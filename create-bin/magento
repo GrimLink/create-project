@@ -221,18 +221,6 @@ bin/magento setup:install \
   --page-cache-redis-db=1 \
   --backend-frontname="${BACKURL}"
 
-# Disable page builder
-if [[ $SKIP == "true" ]]; then
-  echo "Removing the Magento 2 Page builder";
-  composer require yireo/magento2-replace-pagebuilder --no-update
-else
-  read -p "Remove the Magento 2 Page builder? [Y/n] "
-  echo ""
-  if [[ ! $REPLY =~ ^[nN]|[nN][oO]$ ]]; then
-    composer require yireo/magento2-replace-pagebuilder --no-update
-  fi;
-fi
-
 if [[ $SKIP == "true" ]]; then
   for i in "${SETCONFIG[@]}"; do
     bin/magento $i
