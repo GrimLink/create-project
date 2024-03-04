@@ -15,6 +15,9 @@ DEFAULT_DBUSER="root"
 DEFAULT_DBPASS="root"
 MYSQL="mysql -proot"
 
+MVERSION="2.4.6-p4"
+MEDITION="community"
+
 if [[ -z "$NAME" ]]; then
   echo "The Magento install requires a name!" && exit
 fi
@@ -24,18 +27,18 @@ if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
   LARAVEL_VALET="true"
 fi
 
+echo "What Magento edition do want to use?"
+echo "Options: community, enterprise"
+read -p "Edition (community): " EDITION
+if [[ -n "$EDITION" ]]; then MEDITION="$EDITION"; fi
+
 # See versions at https://experienceleague.adobe.com/docs/commerce-operations/release/versions.html
 echo "What Magento version do want to install?"
 echo "  - empty = latest"
 echo "  Or use your own Magento2 version"
-read -p "Version: " VERSION
-if [[ -z "$VERSION" ]]; then
-  echo "Using magento 2.4.6-p1";
-  MVERSION="2.4.6-p1"
-else
-  echo "Using magento $VERSION"
-  MVERSION="$VERSION"
-fi
+read -p "Version (2.4.6-p4): " VERSION
+if [[ -n "$VERSION" ]]; then MVERSION="$VERSION"; fi
+echo "Using magento $MEDITION $MVERSION"
 
 PLUGINS=(
   community-engineering/language-nl_nl
@@ -127,7 +130,7 @@ composer create-project \
   --no-install \
   --stability dev \
   --prefer-source \
-  --repository-url=https://repo.magento.com/ magento/project-community-edition=$MVERSION $NAME &&
+  --repository-url=https://repo.magento.com/ magento/project-$MEDITION-edition=$MVERSION $NAME &&
 cd $NAME
 
 echo "Adjusting composer settings to allow dev packages"
