@@ -56,6 +56,6 @@ case "$PROJECT_TYPE" in
     bash $(dirname "${BASH_SOURCE}")/create-bin/jigsaw $@;
     ;;
   *)
-    echo "No valid project option was given";
+    echo "No valid project type was given, make sure to use 'create-project [PROJECT_TYPE] [PROJECT_NAME]'";
     ;;
 esac
