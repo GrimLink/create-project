@@ -45,7 +45,8 @@ PLUGINS=(
   yireo/magento2-theme-commands
   yireo/magento2-checkouttester2
   siteation/magento2-storeinfo
-  siteation/magento2-storeinfo-extra
+  siteation/magento2-storeinfo-menus
+  siteation/magento2-storeinfo-usps
 );
 
 DEVPLUGINS=();
