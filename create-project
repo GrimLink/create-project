@@ -11,7 +11,7 @@ OPTIONS=(
   'jigsaw'
 );
 
-if [[ $NAME == "update" ]]; then
+if [[ $NAME == "self-update" ]]; then
   bash -c "$(curl -LsS https://raw.githubusercontent.com/GrimLink/create-project/main/install.sh)" && exit 0;
 fi
 

@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2024-04-24
+### Changed
+- Renamed `update` to `self-update` for consitency between other php based scripts
+
 ## 2023-07-23
 ### Added
 - Remove page builder, to the Magento 2 script steps,
