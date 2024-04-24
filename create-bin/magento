@@ -42,6 +42,7 @@ echo "Using magento $MEDITION $MVERSION"
 
 PLUGINS=(
   community-engineering/language-nl_nl
+  cweagans/composer-patches
   yireo/magento2-theme-commands
   yireo/magento2-checkouttester2
   siteation/magento2-storeinfo
@@ -49,7 +50,9 @@ PLUGINS=(
   siteation/magento2-storeinfo-usps
 );
 
-DEVPLUGINS=();
+DEVPLUGINS=(
+  spatie/ray
+);
 
 SETCONFIG=(
   "config:set admin/usage/enabled 0"
