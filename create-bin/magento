@@ -56,7 +56,6 @@ SETCONFIG=(
   "config:set admin/security/session_lifetime 86400"
   "config:set admin/security/password_lifetime ''"
   "deploy:mode:set developer"
-  "module:disable Magento_Csp"
   "module:disable Magento_AdminAdobeImsTwoFactorAuth"
   "module:disable Magento_TwoFactorAuth"
 );
