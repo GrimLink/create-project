@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2024-08-14
+### Added
+- Base code for multi stores with Valet in magento script
+
+### Changed
+- Updated default magento version
+
+### Fixed
+- allow-plugins issue with `cweagans/composer-patches` in magento script
+
 ## 2024-04-24
 ### Changed
 - Renamed `update` to `self-update` for consitency between other php based scripts

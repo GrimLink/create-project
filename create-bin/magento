@@ -247,19 +247,20 @@ fi
 
 # Add Stores via Valet config
 if [[ $LARAVEL_VALET == "true" ]]; then
-  touch .valet-env.php
+cat <<EOF > .valet-env.php
+<?php declare(strict_types=1);
 
-  echo "<?php declare(strict_types=1);\n" >> .valet-env.php
-  echo "return [" >> .valet-env.php
-  echo "\t'$NAME' => [" >> .valet-env.php
-  echo "\t\t'MAGE_RUN_CODE' => 'default'," >> .valet-env.php
-  echo "\t\t'MAGE_RUN_TYPE' => 'store'," >> .valet-env.php
-  echo "\t]," >> .valet-env.php
-  echo "\t//'store-2' => [" >> .valet-env.php
-  echo "\t//\t'MAGE_RUN_CODE' => 'default2', // Store Code" >> .valet-env.php
-  echo "\t//\t'MAGE_RUN_TYPE' => 'store'," >> .valet-env.php
-  echo "\t//]" >> .valet-env.php
-  echo "];" >> .valet-env.php
+return [
+  '$NAME' => [
+    'MAGE_RUN_CODE' => 'default',
+    'MAGE_RUN_TYPE' => 'store',
+  ],
+  // 'store-2' => [
+  //  'MAGE_RUN_CODE' => 'default2', // Store Code
+  //  'MAGE_RUN_TYPE' => 'store',
+  // ]
+];
+EOF
 fi
 
 # if mage
