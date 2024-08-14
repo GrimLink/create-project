@@ -15,7 +15,7 @@ DEFAULT_DBUSER="root"
 DEFAULT_DBPASS="root"
 MYSQL="mysql -proot"
 
-MVERSION="2.4.6-p4"
+MVERSION="2.4.7-p2"
 MEDITION="community"
 
 if [[ -z "$NAME" ]]; then
@@ -36,7 +36,7 @@ if [[ -n "$EDITION" ]]; then MEDITION="$EDITION"; fi
 echo "What Magento version do want to install?"
 echo "  - empty = latest"
 echo "  Or use your own Magento2 version"
-read -p "Version (2.4.6-p4): " VERSION
+read -p "Version ($MVERSION): " VERSION
 if [[ -n "$VERSION" ]]; then MVERSION="$VERSION"; fi
 echo "Using magento $MEDITION $MVERSION"
 
@@ -132,12 +132,18 @@ composer create-project \
   --no-install \
   --stability dev \
   --prefer-source \
-  --repository-url=https://repo.magento.com/ magento/project-$MEDITION-edition=$MVERSION $NAME &&
+  --repository-url=https://repo.magento.com/ magento/project-$MEDITION-edition=$MVERSION $NAME
+
+if [ ! -d $NAME ]; then
+  echo "Creation failed, see error above" && exit;
+fi
+
 cd $NAME
 
 echo "Adjusting composer settings to allow dev packages"
 composer config minimum-stability dev
 composer config prefer-stable true
+composer config allow-plugins.cweagans/composer-patches true
 
 echo "Setting up local composer folder"
 mkdir -p package-source
@@ -237,6 +243,23 @@ else
       bin/magento $i
     done;
   fi
+fi
+
+# Add Stores via Valet config
+if [[ $LARAVEL_VALET == "true" ]]; then
+  touch .valet-env.php
+
+  echo "<?php declare(strict_types=1);\n" >> .valet-env.php
+  echo "return [" >> .valet-env.php
+  echo "\t'$NAME' => [" >> .valet-env.php
+  echo "\t\t'MAGE_RUN_CODE' => 'default'," >> .valet-env.php
+  echo "\t\t'MAGE_RUN_TYPE' => 'store'," >> .valet-env.php
+  echo "\t]," >> .valet-env.php
+  echo "\t//'store-2' => [" >> .valet-env.php
+  echo "\t//\t'MAGE_RUN_CODE' => 'default2', // Store Code" >> .valet-env.php
+  echo "\t//\t'MAGE_RUN_TYPE' => 'store'," >> .valet-env.php
+  echo "\t//]" >> .valet-env.php
+  echo "];" >> .valet-env.php
 fi
 
 # if mage
