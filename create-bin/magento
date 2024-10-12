@@ -15,7 +15,7 @@ DEFAULT_DBUSER="root"
 DEFAULT_DBPASS="root"
 MYSQL="mysql -proot"
 
-MVERSION="2.4.7-p2"
+MVERSION="2.4.7-p3"
 MEDITION="community"
 
 if [[ -z "$NAME" ]]; then
