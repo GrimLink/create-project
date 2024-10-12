@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2024-10-12
+### Added
+- Mage-os to magento script
+
+### Changed
+- Updated default magento version
+
 ## 2024-08-14
 ### Added
 - Base code for multi stores with Valet in magento script
