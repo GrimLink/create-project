@@ -51,6 +51,7 @@ PLUGINS=(
 );
 
 DEVPLUGINS=(
+  avstudnitz/scopehint2
   spatie/ray
 );
 
