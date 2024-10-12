@@ -28,9 +28,13 @@ if [[ $(valet -V | cut -f1,2 -d ' ') == "Laravel Valet" ]]; then
 fi
 
 echo "What Magento edition do want to use?"
-echo "Options: community, enterprise"
+echo "Options: community, enterprise, mage-os"
 read -p "Edition (community): " EDITION
 if [[ -n "$EDITION" ]]; then MEDITION="$EDITION"; fi
+
+if [[ $MEDITION == "mage-os" ]]; then
+  MVERSION="^1.0"
+fi
 
 # See versions at https://experienceleague.adobe.com/docs/commerce-operations/release/versions.html
 echo "What Magento version do want to install?"
@@ -38,7 +42,12 @@ echo "  - empty = latest"
 echo "  Or use your own Magento2 version"
 read -p "Version ($MVERSION): " VERSION
 if [[ -n "$VERSION" ]]; then MVERSION="$VERSION"; fi
-echo "Using magento $MEDITION $MVERSION"
+
+if [[ $MEDITION == "mage-os" ]]; then
+  echo "Using $MEDITION $MVERSION"
+else
+  echo "Using Magento $MEDITION $MVERSION"
+fi
 
 PLUGINS=(
   community-engineering/language-nl_nl
@@ -60,8 +69,6 @@ SETCONFIG=(
   "config:set admin/security/session_lifetime 86400"
   "config:set admin/security/password_lifetime ''"
   "deploy:mode:set developer"
-  "module:disable Magento_AdminAdobeImsTwoFactorAuth"
-  "module:disable Magento_TwoFactorAuth"
 );
 
 read -p "Run quick install? [Y/n] " && echo ""
@@ -129,11 +136,19 @@ if [[ -z "$BACKURL" ]]; then BACKURL="admin"; fi
 
 # Setup installation
 echo "Setting up Magento 2 composer"
-composer create-project \
-  --no-install \
-  --stability dev \
-  --prefer-source \
-  --repository-url=https://repo.magento.com/ magento/project-$MEDITION-edition=$MVERSION $NAME
+if [[ $MEDITION == "mage-os" ]]; then
+  composer create-project \
+    --no-install \
+    --stability dev \
+    --prefer-source \
+    --repository-url=https://repo.mage-os.org/ mage-os/project-community-edition=$MVERSION $NAME
+else
+  composer create-project \
+    --no-install \
+    --stability dev \
+    --prefer-source \
+    --repository-url=https://repo.magento.com/ magento/project-$MEDITION-edition=$MVERSION $NAME
+fi
 
 if [ ! -d $NAME ]; then
   echo "Creation failed, see error above" && exit;
@@ -234,6 +249,10 @@ if [[ $SKIP == "true" ]]; then
   for i in "${SETCONFIG[@]}"; do
     bin/magento $i
   done;
+  if [[ $MEDITION != "mage-os" ]]; then
+    bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth
+  fi
+  bin/magento module:disable Magento_TwoFactorAuth
 else
   read -p "Set mode to developer? [Y/n] "
   echo ""
@@ -243,6 +262,10 @@ else
     for i in "${SETCONFIG[@]}"; do
       bin/magento $i
     done;
+      if [[ $MEDITION != "mage-os" ]]; then
+        bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth
+      fi
+      bin/magento module:disable Magento_TwoFactorAuth
   fi
 fi
 
