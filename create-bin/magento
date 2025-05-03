@@ -13,7 +13,7 @@ LARAVEL_VALET="false"
 DEFAULT_DBHOST="localhost"
 DEFAULT_DBUSER="root"
 DEFAULT_DBPASS="root"
-MYSQL="mysql -proot"
+MYSQL="mysql -uroot -proot"
 
 MVERSION="2.4.8"
 MEDITION="community"
