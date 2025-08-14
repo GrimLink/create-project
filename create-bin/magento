@@ -15,7 +15,7 @@ DEFAULT_DBUSER="root"
 DEFAULT_DBPASS="root"
 MYSQL="mysql -uroot -proot"
 
-MVERSION="2.4.8"
+MVERSION="2.4.8-p2"
 MEDITION="community"
 
 if [[ -z "$NAME" ]]; then
@@ -52,16 +52,18 @@ fi
 PLUGINS=(
   community-engineering/language-nl_nl
   cweagans/composer-patches
-  yireo/magento2-theme-commands
-  yireo/magento2-checkouttester2
   siteation/magento2-storeinfo
   siteation/magento2-storeinfo-menus
   siteation/magento2-storeinfo-usps
+  yireo/magento2-checkouttester2
+  yireo/magento2-theme-commands
 );
 
 DEVPLUGINS=(
   avstudnitz/scopehint2
   spatie/ray
+  swissup/module-ignition
+  yireo/magento2-extensionchecker
 );
 
 SETCONFIG=(
@@ -160,6 +162,7 @@ echo "Adjusting composer settings to allow dev packages"
 composer config minimum-stability dev
 composer config prefer-stable true
 composer config allow-plugins.cweagans/composer-patches true
+composer config allow-plugins.swissup/module-ignition true
 
 echo "Setting up local composer folder"
 mkdir -p package-source

@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2025-08-14
+### Added
+- `swissup/module-ignition` and `yireo/magento2-extensionchecker` to dev dependencies
+
+### Changed
+- Default Magento 2 version
+
 ## 2025-04-13
 ### Changed
 - Default Magento 2 version
